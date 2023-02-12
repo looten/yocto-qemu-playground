@@ -1,12 +1,11 @@
 #
-# Copyright OpenEmbedded Contributors
-#
 # SPDX-License-Identifier: MIT
 #
 
 from oeqa.selftest.case import OESelftestTestCase
-from oeqa.utils.commands import runCmd, bitbake, get_bb_var
+from oeqa.utils.commands import runCmd, bitbake, get_bb_var, runqemu
 import os
+import json
 import re
 
 class FitImageTests(OESelftestTestCase):
@@ -115,8 +114,7 @@ KERNEL_CLASSES = " kernel-fitimage test-mkimage-wrapper "
 UBOOT_SIGN_ENABLE = "1"
 FIT_GENERATE_KEYS = "1"
 UBOOT_SIGN_KEYDIR = "${TOPDIR}/signing-keys"
-UBOOT_SIGN_IMG_KEYNAME = "img-oe-selftest"
-UBOOT_SIGN_KEYNAME = "cfg-oe-selftest"
+UBOOT_SIGN_KEYNAME = "oe-selftest"
 FIT_SIGN_INDIVIDUAL = "1"
 UBOOT_MKIMAGE_SIGN_ARGS = "-c 'a smart comment'"
 """
@@ -175,11 +173,11 @@ UBOOT_MKIMAGE_SIGN_ARGS = "-c 'a smart comment'"
 
         reqsigvalues_image = {
             'algo': '"sha256,rsa2048"',
-            'key-name-hint': '"img-oe-selftest"',
+            'key-name-hint': '"oe-selftest"',
         }
         reqsigvalues_config = {
             'algo': '"sha256,rsa2048"',
-            'key-name-hint': '"cfg-oe-selftest"',
+            'key-name-hint': '"oe-selftest"',
             'sign-images': '"kernel", "fdt"',
         }
 
@@ -217,10 +215,7 @@ UBOOT_MKIMAGE_SIGN_ARGS = "-c 'a smart comment'"
         self.assertIn('conf-am335x-boneblack.dtb', signed_sections)
         for signed_section, values in signed_sections.items():
             value = values.get('Sign algo', None)
-            if signed_section.startswith("conf"):
-                self.assertEqual(value, 'sha256,rsa2048:cfg-oe-selftest', 'Signature algorithm for %s not expected value' % signed_section)
-            else:
-                self.assertEqual(value, 'sha256,rsa2048:img-oe-selftest', 'Signature algorithm for %s not expected value' % signed_section)
+            self.assertEqual(value, 'sha256,rsa2048:oe-selftest', 'Signature algorithm for %s not expected value' % signed_section)
             value = values.get('Sign value', None)
             self.assertEqual(len(value), 512, 'Signature value for section %s not expected length' % signed_section)
 
@@ -271,8 +266,7 @@ KERNEL_CLASSES = " kernel-fitimage"
 UBOOT_SIGN_ENABLE = "1"
 FIT_GENERATE_KEYS = "1"
 UBOOT_SIGN_KEYDIR = "${TOPDIR}/signing-keys"
-UBOOT_SIGN_IMG_KEYNAME = "img-oe-selftest"
-UBOOT_SIGN_KEYNAME = "cfg-oe-selftest"
+UBOOT_SIGN_KEYNAME = "oe-selftest"
 FIT_SIGN_INDIVIDUAL = "1"
 """
         self.write_config(config)
@@ -354,8 +348,7 @@ KERNEL_CLASSES = " kernel-fitimage test-mkimage-wrapper "
 UBOOT_SIGN_ENABLE = "1"
 FIT_GENERATE_KEYS = "1"
 UBOOT_SIGN_KEYDIR = "${TOPDIR}/signing-keys"
-UBOOT_SIGN_IMG_KEYNAME = "img-oe-selftest"
-UBOOT_SIGN_KEYNAME = "cfg-oe-selftest"
+UBOOT_SIGN_KEYNAME = "oe-selftest"
 FIT_SIGN_INDIVIDUAL = "1"
 UBOOT_MKIMAGE_SIGN_ARGS = "-c 'a smart U-Boot comment'"
 """
@@ -599,8 +592,7 @@ KERNEL_CLASSES = " kernel-fitimage test-mkimage-wrapper "
 UBOOT_SIGN_ENABLE = "1"
 FIT_GENERATE_KEYS = "1"
 UBOOT_SIGN_KEYDIR = "${TOPDIR}/signing-keys"
-UBOOT_SIGN_IMG_KEYNAME = "img-oe-selftest"
-UBOOT_SIGN_KEYNAME = "cfg-oe-selftest"
+UBOOT_SIGN_KEYNAME = "kernel-oe-selftest"
 FIT_SIGN_INDIVIDUAL = "1"
 """
         self.write_config(config)
@@ -740,11 +732,9 @@ UBOOT_LOADADDRESS = "0x80000000"
 UBOOT_DTB_LOADADDRESS = "0x82000000"
 UBOOT_ARCH = "arm"
 UBOOT_MKIMAGE_DTCOPTS = "-I dts -O dtb -p 2000"
-UBOOT_MKIMAGE_KERNEL_TYPE = "kernel"
 UBOOT_EXTLINUX = "0"
 FIT_GENERATE_KEYS = "1"
 KERNEL_IMAGETYPE_REPLACEMENT = "zImage"
-FIT_KERNEL_COMP_ALG = "none"
 FIT_HASH_ALG = "sha256"
 """
         self.write_config(config)
@@ -766,9 +756,9 @@ FIT_HASH_ALG = "sha256"
 
         kernel_load = str(get_bb_var('UBOOT_LOADADDRESS'))
         kernel_entry = str(get_bb_var('UBOOT_ENTRYPOINT'))
-        kernel_type = str(get_bb_var('UBOOT_MKIMAGE_KERNEL_TYPE'))
-        kernel_compression = str(get_bb_var('FIT_KERNEL_COMP_ALG'))
+        initramfs_bundle_format = str(get_bb_var('KERNEL_IMAGETYPE_REPLACEMENT'))
         uboot_arch = str(get_bb_var('UBOOT_ARCH'))
+        initramfs_bundle = "arch/" + uboot_arch + "/boot/" + initramfs_bundle_format + ".initramfs"
         fit_hash_alg = str(get_bb_var('FIT_HASH_ALG'))
 
         its_file = open(fitimage_its_path)
@@ -778,11 +768,11 @@ FIT_HASH_ALG = "sha256"
         exp_node_lines = [
             'kernel-1 {',
             'description = "Linux kernel";',
-            'data = /incbin/("linux.bin");',
-            'type = "' + kernel_type + '";',
+            'data = /incbin/("' + initramfs_bundle + '");',
+            'type = "kernel";',
             'arch = "' + uboot_arch + '";',
             'os = "linux";',
-            'compression = "' + kernel_compression + '";',
+            'compression = "none";',
             'load = <' + kernel_load + '>;',
             'entry = <' + kernel_entry + '>;',
             'hash-1 {',

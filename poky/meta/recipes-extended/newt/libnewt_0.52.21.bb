@@ -11,7 +11,7 @@ slang library."
 HOMEPAGE = "https://releases.pagure.org/newt/"
 SECTION = "libs"
 
-LICENSE = "LGPL-2.0-only"
+LICENSE = "LGPLv2"
 LIC_FILES_CHKSUM = "file://COPYING;md5=5f30f0716dfdd0d91eb439ebec522ec2"
 
 # slang needs to be >= 2.2
@@ -39,20 +39,20 @@ CLEANBROKEN = "1"
 
 export CPPFLAGS
 
-PACKAGES:prepend = "whiptail ${PN}-python "
+PACKAGES_prepend = "whiptail ${PN}-python "
 
-RDEPENDS:${PN}-python += "python3-core"
-FILES:${PN}-python = "${PYTHON_SITEPACKAGES_DIR}/*"
+RDEPENDS_${PN}-python += "python3-core"
+FILES_${PN}-python = "${PYTHON_SITEPACKAGES_DIR}/*"
 
-do_configure:prepend() {
+do_configure_prepend() {
     sh autogen.sh
 }
 
-do_compile:prepend() {
+do_compile_prepend() {
     # Make sure the recompile is OK
     rm -f ${B}/.depend
 }
 
-FILES:whiptail = "${bindir}/whiptail"
+FILES_whiptail = "${bindir}/whiptail"
 
 BBCLASSEXTEND = "native nativesdk"

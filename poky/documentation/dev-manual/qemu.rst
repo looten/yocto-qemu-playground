@@ -55,14 +55,16 @@ available. Follow these general steps to run QEMU:
 
    -  If you cloned the ``poky`` repository or you downloaded and
       unpacked a Yocto Project release tarball, you can source the build
-      environment script (i.e. :ref:`structure-core-script`)::
+      environment script (i.e. :ref:`structure-core-script`):
+      ::
 
          $ cd poky
          $ source oe-init-build-env
 
    -  If you installed a cross-toolchain, you can run the script that
       initializes the toolchain. For example, the following commands run
-      the initialization script from the default ``poky_sdk`` directory::
+      the initialization script from the default ``poky_sdk`` directory:
+      ::
 
          . poky_sdk/environment-setup-core2-64-poky-linux
 
@@ -84,7 +86,8 @@ available. Follow these general steps to run QEMU:
    Extensible Software Development Kit (eSDK) manual for information on
    how to extract a root filesystem.
 
-4. *Run QEMU:* The basic ``runqemu`` command syntax is as follows::
+4. *Run QEMU:* The basic ``runqemu`` command syntax is as follows:
+   ::
 
       $ runqemu [option ] [...]
 
@@ -123,9 +126,9 @@ available. Follow these general steps to run QEMU:
 
          $ runqemu qemux86-64 core-image-minimal ext4
 
-   -  This example specifies to boot an :term:`Initramfs` image and to
-      enable audio in QEMU. For this case, ``runqemu`` sets the internal
-      variable ``FSTYPE`` to ``cpio.gz``. Also, for audio to be enabled,
+   -  This example specifies to boot an initial RAM disk image and to
+      enable audio in QEMU. For this case, ``runqemu`` set the internal
+      variable ``FSTYPE`` to "cpio.gz". Also, for audio to be enabled,
       an appropriate driver must be installed (see the previous
       description for the ``audio`` option for more information).
       ::
@@ -219,15 +222,18 @@ using an NFS server.
    Should you need to start, stop, or restart the NFS share, you can use
    the following commands:
 
-   -  To start the NFS share::
+   -  The following command starts the NFS share:
+      ::
 
          runqemu-export-rootfs start file-system-location
 
-   -  To stop the NFS share::
+   -  The following command stops the NFS share:
+      ::
 
          runqemu-export-rootfs stop file-system-location
 
-   -  To restart the NFS share::
+   -  The following command restarts the NFS share:
+      ::
 
          runqemu-export-rootfs restart file-system-location
 
@@ -275,7 +281,7 @@ present, the toolchain is also automatically used.
 
 .. note::
 
-   There are several mechanisms to connect to the system running
+   Several mechanisms exist that let you connect to the system running
    on the QEMU emulator:
 
    -  QEMU provides a framebuffer interface that makes standard consoles
@@ -286,7 +292,7 @@ present, the toolchain is also automatically used.
       that port to run a console. The connection uses standard IP
       networking.
 
-   -  SSH servers are available in some QEMU images. The ``core-image-sato``
+   -  SSH servers exist in some QEMU images. The ``core-image-sato``
       QEMU image has a Dropbear secure shell (SSH) server that runs with
       the root password disabled. The ``core-image-full-cmdline`` and
       ``core-image-lsb`` QEMU images have OpenSSH instead of Dropbear.
@@ -307,7 +313,8 @@ present, the toolchain is also automatically used.
 QEMU Command-Line Syntax
 ========================
 
-The basic ``runqemu`` command syntax is as follows::
+The basic ``runqemu`` command syntax is as follows:
+::
 
    $ runqemu [option ] [...]
 
@@ -318,7 +325,8 @@ timestamp when it needs to look for an image. Minimally, through the use
 of options, you must provide either a machine name, a virtual machine
 image (``*wic.vmdk``), or a kernel image (``*.bin``).
 
-Following is the command-line help output for the ``runqemu`` command::
+Following is the command-line help output for the ``runqemu`` command:
+::
 
    $ runqemu --help
 
@@ -394,7 +402,7 @@ command line:
    options are basically identical. If you do not provide a MACHINE
    option, ``runqemu`` tries to determine it based on other options.
 
--  ``ramfs``: Indicates you are booting an :term:`Initramfs`
+-  ``ramfs``: Indicates you are booting an initial RAM disk (initramfs)
    image, which means the ``FSTYPE`` is ``cpio.gz``.
 
 -  ``iso``: Indicates you are booting an ISO image, which means the

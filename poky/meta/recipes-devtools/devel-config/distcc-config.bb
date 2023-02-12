@@ -20,4 +20,4 @@ do_install() {
 	install -m 0755 distcc.sh ${D}${sysconfdir}/profile.d/
 }
 
-RDEPENDS:${PN} = "distcc"
+RDEPENDS_${PN} = "distcc"

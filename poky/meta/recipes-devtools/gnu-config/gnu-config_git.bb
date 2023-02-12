@@ -3,14 +3,14 @@ DESCRIPTION = "Tool that installs the GNU config.guess / config.sub into a direc
 HOMEPAGE = "https://git.savannah.gnu.org/cgit/config.git"
 SECTION = "devel"
 LICENSE = "GPL-3.0-with-autoconf-exception"
-LIC_FILES_CHKSUM = "file://config.guess;beginline=9;endline=29;md5=10922f9231863a06f6efb67691fa46e0"
+LIC_FILES_CHKSUM = "file://config.guess;beginline=7;endline=27;md5=b75d42f59f706ea56d6a8e00216fca6a"
 
-DEPENDS:class-native = "hostperl-runtime-native"
+DEPENDS_class-native = "hostperl-runtime-native"
 
 INHIBIT_DEFAULT_DEPS = "1"
 
-SRCREV = "02ba26b218d3d3db6c56e014655faf463cefa983"
-PV = "20220525+git${SRCPV}"
+SRCREV = "6faca61810d335c7837f320733fe8e15a1431fc2"
+PV = "20210125+git${SRCPV}"
 
 SRC_URI = "git://git.savannah.gnu.org/git/config.git;protocol=https;branch=master \
            file://gnu-configize.in"
@@ -36,6 +36,6 @@ do_install () {
 }
 
 PACKAGES = "${PN}"
-FILES:${PN} = "${bindir} ${datadir}/gnu-config"
+FILES_${PN} = "${bindir} ${datadir}/gnu-config"
 
 BBCLASSEXTEND = "native nativesdk"

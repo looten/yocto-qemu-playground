@@ -1,14 +1,32 @@
 This patch disables tests which we've found "hang" on our infrastructure.
 
+cgroup_xattr:
+https://autobuilder.yoctoproject.org/typhoon/#/builders/95/builds/1926 (x86)
+https://autobuilder.yoctoproject.org/typhoon/#/builders/95/builds/1898 (x86)
+https://autobuilder.yoctoproject.org/typhoon/#/builders/95/builds/1916 (x86)
+
 proc01:
 https://autobuilder.yoctoproject.org/typhoon/#/builders/96/builds/1748 (arm)
 https://autobuilder.yoctoproject.org/typhoon/#/builders/96/builds/1781 (arm)
-https://autobuilder.yoctoproject.org/typhoon/#/builders/96/builds/2782 (arm)
-(was trying to read /proc/kmsg, looks like a horrible test anyway)
+(in the latter was trying to read /proc/kmsg)
+(the above test looks horrible anyway)
 
 Upstream-Status: Inappropriate [OE Configuration]
 Signed-off-by: Richard Purdie <richard.purdie@linuxfoundation.org>
 
+Index: git/runtest/controllers
+===================================================================
+--- git.orig/runtest/controllers
++++ git/runtest/controllers
+@@ -352,8 +352,6 @@ cpuset_memory_spread	cpuset_memory_sprea
+ 
+ cpuset_regression_test cpuset_regression_test.sh
+ 
+-cgroup_xattr	cgroup_xattr
+-
+ pids_1_1 pids.sh 1 1 0
+ pids_1_2 pids.sh 1 2 0
+ pids_1_10 pids.sh 1 10 0
 Index: git/runtest/fs
 ===================================================================
 --- git.orig/runtest/fs

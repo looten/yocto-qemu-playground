@@ -98,7 +98,6 @@ contact us with other suggestions.
    be going wrong.
 
    .. image:: figures/yp-how-it-works-new-diagram.png
-      :width: 100%
 
 #. **Know that you can generate a dependency graph and learn how to do it:**
    A dependency graph shows dependencies between recipes, tasks, and targets.
@@ -151,7 +150,7 @@ contact us with other suggestions.
    need, which is advantageous because you are building for small devices when
    developing for embedded and IoT.
 
-#. **You will want to learn about and know what's packaged in the root filesystem.**
+#. **You will want to learn about and know what's packaged in rootfs.**
 
 #. **Create your own image recipe:**
    There are a number of ways to create your own image recipe.  We suggest you
@@ -180,7 +179,7 @@ contact us with other suggestions.
    * understand devtool and how it simplifies your workflow
    * improve build speeds with shared downloads and shared state cache
    * generate and understand a dependency graph
-   * generate and understand BitBake environment
+   * generate and understand bitbake environment
    * build an Extensible SDK for applications development
 
 #. **Depending on what you primary interests are with the Yocto Project, you

@@ -1,10 +1,4 @@
 #
-# Copyright OpenEmbedded Contributors
-#
-# SPDX-License-Identifier: MIT
-#
-
-#
 # Usage:
 # - Enable ccache
 #   Add the following line to a conffile such as conf/local.conf:

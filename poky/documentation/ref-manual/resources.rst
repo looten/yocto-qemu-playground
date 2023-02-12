@@ -10,7 +10,7 @@ Introduction
 ============
 
 The Yocto Project team is happy for people to experiment with the Yocto
-Project. There is a number of places where you can find help if you run into
+Project. A number of places exist to find help if you run into
 difficulties or find bugs. This presents information about contributing
 and participating in the Yocto Project.
 
@@ -43,7 +43,8 @@ the Yocto Project itself (e.g. when discovering an issue with some
 component of the build system that acts contrary to the documentation or
 your expectations).
 
-For a general procedure and guidelines on how to use Bugzilla to submit a bug
+A general procedure and guidelines exist for when you use Bugzilla to
+submit a bug. For information on how to use Bugzilla to submit a bug
 against the Yocto Project, see the following:
 
 -  The ":ref:`dev-manual/common-tasks:submitting a defect against the yocto project`"
@@ -58,28 +59,28 @@ For information on Bugzilla in general, see https://www.bugzilla.org/about/.
 Mailing lists
 =============
 
-There are multiple mailing lists maintained by the Yocto Project as well
+A number of mailing lists maintained by the Yocto Project exist as well
 as related OpenEmbedded mailing lists for discussion, patch submission
 and announcements. To subscribe to one of the following mailing lists,
 click on the appropriate URL in the following list and follow the
 instructions:
 
--  :yocto_lists:`/g/yocto` --- general Yocto Project
+-  :yocto_lists:`/g/yocto` - General Yocto Project
    discussion mailing list.
 
--  :oe_lists:`/g/openembedded-core` --- discussion mailing
+-  :oe_lists:`/g/openembedded-core` - Discussion mailing
    list about OpenEmbedded-Core (the core metadata).
 
--  :oe_lists:`/g/openembedded-devel` --- discussion
+-  :oe_lists:`/g/openembedded-devel` - Discussion
    mailing list about OpenEmbedded.
 
--  :oe_lists:`/g/bitbake-devel` --- discussion mailing
+-  :oe_lists:`/g/bitbake-devel` - Discussion mailing
    list about the :term:`BitBake` build tool.
 
--  :yocto_lists:`/g/poky` --- discussion mailing list
+-  :yocto_lists:`/g/poky` - Discussion mailing list
    about :term:`Poky`.
 
--  :yocto_lists:`/g/yocto-announce` --- mailing list to
+-  :yocto_lists:`/g/yocto-announce` - Mailing list to
    receive official Yocto Project release and milestone announcements.
 
 For more Yocto Project-related mailing lists, see the
@@ -90,12 +91,12 @@ For more Yocto Project-related mailing lists, see the
 Internet Relay Chat (IRC)
 =========================
 
-Two IRC channels on `Libera Chat <https://libera.chat/>`__
-are available for the Yocto Project and OpenEmbedded discussions:
+Two IRC channels on Freenode are available for the Yocto Project and
+Poky discussions:
 
 -  ``#yocto``
 
--  ``#oe``
+-  ``#poky``
 
 .. _resources-links-and-related-documentation:
 
@@ -155,8 +156,9 @@ Here is a list of resources you might find helpful:
 
 -  :yocto_docs:`Yocto Project Mega-Manual </singleindex.html>`\ *:* This manual
    is simply a single HTML file comprised of the bulk of the Yocto
-   Project manuals. It makes it easy to search for phrases and terms used
-   in the Yocto Project documentation set.
+   Project manuals. The Mega-Manual primarily exists as a vehicle by
+   which you can easily search for phrases and terms used in the Yocto
+   Project documentation set.
 
 -  :doc:`/profile-manual/index` *:* This manual presents a set of
    common and generally useful tracing and profiling schemes along with
@@ -187,10 +189,9 @@ Here is a list of resources you might find helpful:
    implementation of Bugzilla for logging and tracking Yocto Project
    defects.
 
--  *Internet Relay Chat (IRC):* Two IRC channels on
-   `Libera Chat <https://libera.chat/>`__ are
-   available for Yocto Project and OpenEmbeddded discussions: ``#yocto`` and
-   ``#oe``, respectively.
+-  *Internet Relay Chat (IRC):* Two IRC channels on Freenode are
+   available for Yocto Project and Poky discussions: ``#yocto`` and
+   ``#poky``, respectively.
 
 -  `Quick EMUlator (QEMU) <https://wiki.qemu.org/Index.html>`__\ *:* An
    open-source machine emulator and virtualizer.

@@ -76,12 +76,7 @@ def getDiskData(BBDirs):
             return None
 
         action = pathSpaceInodeRe.group(1)
-        if action == "ABORT":
-            # Emit a deprecation warning
-            logger.warnonce("The BB_DISKMON_DIRS \"ABORT\" action has been renamed to \"HALT\", update configuration")
-            action = "HALT"
-
-        if action not in ("HALT", "STOPTASKS", "WARN"):
+        if action not in ("ABORT", "STOPTASKS", "WARN"):
             printErr("Unknown disk space monitor action: %s" % action)
             return None
 
@@ -182,7 +177,7 @@ class diskMonitor:
                     # use them to avoid printing too many warning messages
                     self.preFreeS = {}
                     self.preFreeI = {}
-                    # This is for STOPTASKS and HALT, to avoid printing the message
+                    # This is for STOPTASKS and ABORT, to avoid printing the message
                     # repeatedly while waiting for the tasks to finish
                     self.checked = {}
                     for k in self.devDict:
@@ -224,8 +219,8 @@ class diskMonitor:
                         self.checked[k] = True
                         rq.finish_runqueue(False)
                         bb.event.fire(bb.event.DiskFull(dev, 'disk', freeSpace, path), self.configuration)
-                    elif action == "HALT" and not self.checked[k]:
-                        logger.error("Immediately halt since the disk space monitor action is \"HALT\"!")
+                    elif action == "ABORT" and not self.checked[k]:
+                        logger.error("Immediately abort since the disk space monitor action is \"ABORT\"!")
                         self.checked[k] = True
                         rq.finish_runqueue(True)
                         bb.event.fire(bb.event.DiskFull(dev, 'disk', freeSpace, path), self.configuration)
@@ -250,8 +245,8 @@ class diskMonitor:
                         self.checked[k] = True
                         rq.finish_runqueue(False)
                         bb.event.fire(bb.event.DiskFull(dev, 'inode', freeInode, path), self.configuration)
-                    elif action  == "HALT" and not self.checked[k]:
-                        logger.error("Immediately halt since the disk space monitor action is \"HALT\"!")
+                    elif action  == "ABORT" and not self.checked[k]:
+                        logger.error("Immediately abort since the disk space monitor action is \"ABORT\"!")
                         self.checked[k] = True
                         rq.finish_runqueue(True)
                         bb.event.fire(bb.event.DiskFull(dev, 'inode', freeInode, path), self.configuration)

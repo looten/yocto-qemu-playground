@@ -2,8 +2,8 @@ SUMMARY = "SysV init scripts"
 HOMEPAGE = "https://github.com/fedora-sysv/initscripts"
 DESCRIPTION = "Initscripts provide the basic system startup initialization scripts for the system.  These scripts include actions such as filesystem mounting, fsck, RTC manipulation and other actions routinely performed at system startup.  In addition, the scripts are also used during system shutdown to reverse the actions performed at startup."
 SECTION = "base"
-LICENSE = "GPL-2.0-only"
-LIC_FILES_CHKSUM = "file://functions;beginline=7;endline=7;md5=829e563511c9a1d6d41f17a7a4989d6a"
+LICENSE = "GPLv2"
+LIC_FILES_CHKSUM = "file://COPYING;md5=751419260aa954499f7abaabaa882bbe"
 PR = "r155"
 
 INHIBIT_DEFAULT_DEPS = "1"
@@ -31,6 +31,7 @@ SRC_URI = "file://functions \
            file://read-only-rootfs-hook.sh \
            file://volatiles \
            file://save-rtc.sh \
+           file://GPLv2.patch \
            file://dmesg.sh \
            file://logrotate-dmesg.conf \
            ${@bb.utils.contains('DISTRO_FEATURES','selinux','file://sushell','',d)} \
@@ -38,25 +39,25 @@ SRC_URI = "file://functions \
 
 S = "${WORKDIR}"
 
-SRC_URI:append:arm = " file://alignment.sh"
-SRC_URI:append:armeb = " file://alignment.sh"
+SRC_URI_append_arm = " file://alignment.sh"
+SRC_URI_append_armeb = " file://alignment.sh"
 
 KERNEL_VERSION = ""
 
-DEPENDS:append = " update-rc.d-native"
-PACKAGE_WRITE_DEPS:append = " ${@bb.utils.contains('DISTRO_FEATURES','systemd','systemd-systemctl-native','',d)}"
+DEPENDS_append = " update-rc.d-native"
+PACKAGE_WRITE_DEPS_append = " ${@bb.utils.contains('DISTRO_FEATURES','systemd','systemd-systemctl-native','',d)}"
 
 PACKAGES =+ "${PN}-functions ${PN}-sushell"
-RDEPENDS:${PN} = "initd-functions \
+RDEPENDS_${PN} = "initd-functions \
                   ${@bb.utils.contains('DISTRO_FEATURES','selinux','${PN}-sushell','',d)} \
                   init-system-helpers-service \
 		 "
 # Recommend pn-functions so that it will be a preferred default provider for initd-functions
-RRECOMMENDS:${PN} = "${PN}-functions"
-RPROVIDES:${PN}-functions = "initd-functions"
-RCONFLICTS:${PN}-functions = "lsbinitscripts"
-FILES:${PN}-functions = "${sysconfdir}/init.d/functions*"
-FILES:${PN}-sushell = "${base_sbindir}/sushell"
+RRECOMMENDS_${PN} = "${PN}-functions"
+RPROVIDES_${PN}-functions = "initd-functions"
+RCONFLICTS_${PN}-functions = "lsbinitscripts"
+FILES_${PN}-functions = "${sysconfdir}/init.d/functions*"
+FILES_${PN}-sushell = "${base_sbindir}/sushell"
 
 HALTARGS ?= "-d -f"
 
@@ -130,7 +131,7 @@ do_install () {
 	update-rc.d -r ${D} rmnologin.sh start 99 2 3 4 5 .
 	update-rc.d -r ${D} sendsigs start 20 0 6 .
 	update-rc.d -r ${D} urandom start 38 S 0 6 .
-	update-rc.d -r ${D} umountnfs.sh stop 31 0 1 6 .
+	update-rc.d -r ${D} umountnfs.sh start 31 0 1 6 .
 	update-rc.d -r ${D} umountfs start 40 0 6 .
 	update-rc.d -r ${D} reboot start 90 6 .
 	update-rc.d -r ${D} halt start 90 0 .
@@ -169,7 +170,7 @@ MASKED_SCRIPTS = " \
   sysfs \
   urandom"
 
-pkg_postinst:${PN} () {
+pkg_postinst_${PN} () {
 	if type systemctl >/dev/null 2>/dev/null; then
 		if [ -n "$D" ]; then
 			OPTS="--root=$D"
@@ -185,4 +186,4 @@ pkg_postinst:${PN} () {
     fi
 }
 
-CONFFILES:${PN} += "${sysconfdir}/init.d/checkroot.sh"
+CONFFILES_${PN} += "${sysconfdir}/init.d/checkroot.sh"

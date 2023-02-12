@@ -9,8 +9,8 @@ concepts and have some basic command reference material available. This
 final chapter provides conceptual information on layer sources,
 releases, and JSON configuration files. Also provided is a quick look at
 some useful ``manage.py`` commands that are Toaster-specific.
-Information on ``manage.py`` commands is available across the Web and
-this manual by no means attempts to provide a command
+Information on ``manage.py`` commands does exist across the Web and the
+information in this manual by no means attempts to provide a command
 comprehensive reference.
 
 Layer Source
@@ -32,8 +32,9 @@ through a
 `REST <https://en.wikipedia.org/wiki/Representational_state_transfer>`__
 API, store the information about the layers in the Toaster database, and
 then show the information to users. Users are then able to view that
-information and build layers from Toaster itself without having to
-clone or edit the BitBake layers configuration file ``bblayers.conf``.
+information and build layers from Toaster itself without worrying about
+cloning or editing the BitBake layers configuration file
+``bblayers.conf``.
 
 Tying a layer source into Toaster is convenient when you have many
 custom layers that need to be built on a regular basis by a community of
@@ -186,7 +187,7 @@ Configuring the Workflow
 ------------------------
 
 The ``bldcontrol/management/commands/checksettings.py`` file controls
-workflow configuration. Here is the process to
+workflow configuration. The following steps outline the process to
 initially populate this database.
 
 1. The default project settings are set from
@@ -237,7 +238,7 @@ The following example sets "name" to "CUSTOM_XML_ONLY" and its value to
 Understanding Fixture File Format
 ---------------------------------
 
-Here is an overview of the file format used by the
+The following is an overview of the file format used by the
 ``oe-core.xml``, ``poky.xml``, and ``custom.xml`` files.
 
 The following subsections describe each of the sections in the fixture
@@ -296,7 +297,7 @@ The following defines the releases when you create a new project:
       <field type="CharField" name="description">Yocto Project &DISTRO; "&DISTRO_NAME;"</field>
       <field rel="ManyToOneRel" to="orm.bitbakeversion" name="bitbake_version">1</field>
       <field type="CharField" name="branch_name">&DISTRO_NAME_NO_CAP;</field>
-      <field type="TextField" name="helptext">Toaster will run your builds using the tip of the <a href="https://git.yoctoproject.org/cgit/cgit.cgi/poky/log/?h=&DISTRO_NAME_NO_CAP;">Yocto Project &DISTRO_NAME; branch</a>.</field>
+      <field type="TextField" name="helptext">Toaster will run your builds using the tip of the <a href="http://git.yoctoproject.org/cgit/cgit.cgi/poky/log/?h=&DISTRO_NAME_NO_CAP;">Yocto Project &DISTRO_NAME; branch</a>.</field>
    </object>
 
 The "pk" value must match the above respective BitBake version record.
@@ -333,9 +334,9 @@ that includes the layer. In general all releases include the layer.
       <field type="CharField" name="name">openembedded-core</field>
       <field type="CharField" name="layer_index_url"></field>
       <field type="CharField" name="vcs_url">git://git.yoctoproject.org/poky</field>
-      <field type="CharField" name="vcs_web_url">https://git.yoctoproject.org/cgit/cgit.cgi/poky</field>
-      <field type="CharField" name="vcs_web_tree_base_url">https://git.yoctoproject.org/cgit/cgit.cgi/poky/tree/%path%?h=%branch%</field>
-      <field type="CharField" name="vcs_web_file_base_url">https://git.yoctoproject.org/cgit/cgit.cgi/poky/tree/%path%?h=%branch%</field>
+      <field type="CharField" name="vcs_web_url">http://git.yoctoproject.org/cgit/cgit.cgi/poky</field>
+      <field type="CharField" name="vcs_web_tree_base_url">http://git.yoctoproject.org/cgit/cgit.cgi/poky/tree/%path%?h=%branch%</field>
+      <field type="CharField" name="vcs_web_file_base_url">http://git.yoctoproject.org/cgit/cgit.cgi/poky/tree/%path%?h=%branch%</field>
    </object>
    <object model="orm.layer_version" pk="1">
       <field rel="ManyToOneRel" to="orm.layer" name="layer">1</field>
@@ -407,7 +408,7 @@ To get the status of pending builds, use the following call::
 Be sure to provide values for host and port. The output is a JSON file that
 itemizes all builds in progress. This file includes the time in seconds since
 each respective build started as well as the progress of the cloning, parsing,
-and task execution. Here is sample output for a build in progress:
+and task execution. The following is sample output for a build in progress:
 
 .. code-block:: JSON
 
@@ -440,8 +441,8 @@ call::
    http://host:port/toastergui/api/builds
 
 Be sure to provide values for host and port. The output is a JSON file that
-itemizes all complete builds, and includes build summary information. Here
-is sample output for a completed build:
+itemizes all complete builds, and includes build summary information. The
+following is sample output for a completed build:
 
 .. code-block:: JSON
 
@@ -479,7 +480,7 @@ Completed query. See the ":ref:`toaster-manual/reference:checking status of buil
 section for more information.
 
 The output is a JSON file that itemizes the specific build and includes
-build summary information. Here is sample output for a specific
+build summary information. The following is sample output for a specific
 build:
 
 .. code-block:: JSON
@@ -508,7 +509,7 @@ Useful Commands
 ===============
 
 In addition to the web user interface and the scripts that start and
-stop Toaster, command-line commands are available through the ``manage.py``
+stop Toaster, command-line commands exist through the ``manage.py``
 management script. You can find general documentation on ``manage.py``
 at the
 `Django <https://docs.djangoproject.com/en/2.2/topics/settings/>`__

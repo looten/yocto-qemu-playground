@@ -155,11 +155,9 @@ class KickStart():
         part.add_argument('--change-directory')
         part.add_argument("--extra-space", type=sizetype("M"))
         part.add_argument('--fsoptions', dest='fsopts')
-        part.add_argument('--fspassno', dest='fspassno')
         part.add_argument('--fstype', default='vfat',
                           choices=('ext2', 'ext3', 'ext4', 'btrfs',
-                                   'squashfs', 'vfat', 'msdos', 'erofs',
-                                   'swap', 'none'))
+                                   'squashfs', 'vfat', 'msdos', 'swap'))
         part.add_argument('--mkfs-extraopts', default='')
         part.add_argument('--label')
         part.add_argument('--use-label', action='store_true')
@@ -186,7 +184,6 @@ class KickStart():
         part.add_argument('--use-uuid', action='store_true')
         part.add_argument('--uuid')
         part.add_argument('--fsuuid')
-        part.add_argument('--no-fstab-update', action='store_true')
 
         bootloader = subparsers.add_parser('bootloader')
         bootloader.add_argument('--append')
@@ -232,10 +229,6 @@ class KickStart():
                                 err = "%s:%d: SquashFS does not support LABEL" \
                                        % (confpath, lineno)
                                 raise KickStartError(err)
-                        # erofs does not support filesystem labels
-                        if parsed.fstype == 'erofs' and parsed.label:
-                            err = "%s:%d: erofs does not support LABEL" % (confpath, lineno)
-                            raise KickStartError(err)
                         if parsed.fstype == 'msdos' or parsed.fstype == 'vfat':
                             if parsed.fsuuid:
                                 if parsed.fsuuid.upper().startswith('0X'):

@@ -9,15 +9,31 @@ import bb.utils
 import functools
 import multiprocessing
 import textwrap
+import json
+import unittest
 import tempfile
 import shutil
 import stat
 import os
 import datetime
 
+# For sample packages, see:
+# https://autobuilder.yocto.io/pub/repro-fail/oe-reproducible-20201127-0t7wr_oo/
+# https://autobuilder.yocto.io/pub/repro-fail/oe-reproducible-20201127-4s9ejwyp/
+# https://autobuilder.yocto.io/pub/repro-fail/oe-reproducible-20201127-haiwdlbr/
+# https://autobuilder.yocto.io/pub/repro-fail/oe-reproducible-20201127-hwds3mcl/
+# https://autobuilder.yocto.io/pub/repro-fail/oe-reproducible-20201203-sua0pzvc/
+# (both packages/ and packages-excluded/)
+
+# ruby-ri-docs, meson:
+#https://autobuilder.yocto.io/pub/repro-fail/oe-reproducible-20210215-0_td9la2/packages/diff-html/
 exclude_packages = [
-	'rust',
-	'rust-dbg'
+	'glide',
+	'go-helloworld',
+	'go-runtime',
+	'go_',
+	'go-',
+	'ruby-ri-docs'
 	]
 
 def is_excluded(package):
@@ -203,11 +219,12 @@ class ReproducibleTests(OESelftestTestCase):
             bb.utils.remove(tmpdir, recurse=True)
 
         config = textwrap.dedent('''\
+            INHERIT += "reproducible_build"
             PACKAGE_CLASSES = "{package_classes}"
             INHIBIT_PACKAGE_STRIP = "1"
             TMPDIR = "{tmpdir}"
-            LICENSE_FLAGS_ACCEPTED = "commercial"
-            DISTRO_FEATURES:append = ' systemd pam'
+            LICENSE_FLAGS_WHITELIST = "commercial"
+            DISTRO_FEATURES_append = ' systemd pam'
             USERADDEXTENSION = "useradd-staticids"
             USERADD_ERROR_DYNAMIC = "skip"
             USERADD_UID_TABLES += "files/static-passwd"

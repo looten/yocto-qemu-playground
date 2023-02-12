@@ -34,6 +34,6 @@ do_install() {
 }
 
 PACKAGES = "${PN}"
-FILES:${PN} = "${SDKPATHNATIVE}"
-RDEPENDS:${PN} += "nativesdk-icecc-create-env"
+FILES_${PN} = "${SDKPATHNATIVE}"
+RDEPENDS_${PN} += "nativesdk-icecc-create-env"
 

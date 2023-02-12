@@ -9,7 +9,7 @@ second library, libXmuu."
 
 require xorg-lib-common.inc
 
-LICENSE = "MIT & MIT"
+LICENSE = "MIT & MIT-style"
 LIC_FILES_CHKSUM = "file://COPYING;md5=def3d8e4e9c42004f1941fa22f01dc18"
 
 DEPENDS += "libxt libxext"
@@ -23,7 +23,7 @@ LEAD_SONAME = "libXmu"
 
 PACKAGES =+ "libxmuu"
 
-FILES:libxmuu = "${libdir}/libXmuu.so.*"
+FILES_libxmuu = "${libdir}/libXmuu.so.*"
 
 BBCLASSEXTEND = "native"
 

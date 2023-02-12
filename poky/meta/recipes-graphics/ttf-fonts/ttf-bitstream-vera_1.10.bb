@@ -33,4 +33,4 @@ do_install () {
         done
 }
 
-FILES:${PN} = "${datadir}/fonts"
+FILES_${PN} = "${datadir}/fonts"

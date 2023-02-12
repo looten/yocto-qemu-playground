@@ -2,11 +2,11 @@ SUMMARY = "A GNU tool that produce shell scripts to automatically configure soft
 DESCRIPTION = "Autoconf is an extensible package of M4 macros that produce shell scripts to automatically \ 
 configure software source code packages. Autoconf creates a configuration script for a package from a template \
 file that lists the operating system features that the package can use, in the form of M4 macro calls."
-LICENSE = "GPL-3.0-or-later"
+LICENSE = "GPLv3+"
 HOMEPAGE = "http://www.gnu.org/software/autoconf/"
 SECTION = "devel"
 DEPENDS = "m4-native autoconf-native automake-native gnu-config-native help2man-native"
-DEPENDS:remove:class-native = "autoconf-native automake-native help2man-native"
+DEPENDS_remove_class-native = "autoconf-native automake-native help2man-native"
 
 LIC_FILES_CHKSUM = "file://COPYING;md5=cc3f3a7596cb558bbd9eb7fbaa3ef16c \
 		    file://COPYINGv3;md5=1ebbd3e34237af26da5dc08a4e440464"
@@ -18,13 +18,12 @@ SRC_URI = "${GNU_MIRROR}/autoconf/${BP}.tar.gz \
            file://preferbash.patch \
            file://autotest-automake-result-format.patch \
            file://man-host-perl.patch \
-           file://0001-Port-to-compilers-that-moan-about-K-R-func-decls.patch \
            "
-SRC_URI:append:class-native = " file://no-man.patch"
+SRC_URI_append_class-native = " file://no-man.patch"
 
 SRC_URI[sha256sum] = "431075ad0bf529ef13cb41e9042c542381103e80015686222b8a9d4abef42a1c"
 
-RDEPENDS:${PN} = "m4 gnu-config \
+RDEPENDS_${PN} = "m4 gnu-config \
 		  perl \
 		  perl-module-bytes \
 		  perl-module-carp \
@@ -52,13 +51,13 @@ RDEPENDS:${PN} = "m4 gnu-config \
 		  perl-module-thread-queue \
 		  perl-module-threads \
 		 "
-RDEPENDS:${PN}:class-native = "m4-native gnu-config-native hostperl-runtime-native"
+RDEPENDS_${PN}_class-native = "m4-native gnu-config-native hostperl-runtime-native"
 
 inherit autotools texinfo
 
 PERL = "${USRBINPATH}/perl"
-PERL:class-native = "/usr/bin/env perl"
-PERL:class-nativesdk = "/usr/bin/env perl"
+PERL_class-native = "/usr/bin/env perl"
+PERL_class-nativesdk = "/usr/bin/env perl"
 
 CACHED_CONFIGUREVARS += "ac_cv_path_PERL='${PERL}'"
 
@@ -71,11 +70,11 @@ update_gnu_config() {
 }
 do_configure[prefuncs] += "update_gnu_config"
 
-do_configure:class-native() {
+do_configure_class-native() {
 	oe_runconf
 }
 
-do_install:append() {
+do_install_append() {
     rm -rf ${D}${datadir}/emacs
 }
 

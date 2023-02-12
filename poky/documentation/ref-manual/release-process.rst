@@ -62,10 +62,8 @@ codename are likely to be compatible and thus work together.
 
 Releases are given a nominal release version as well but the codename is
 used in repositories for this reason. You can find information on Yocto
-Project releases and codenames at :yocto_wiki:`/Releases`.
-
-Our :doc:`/migration-guides/index` detail how to migrate from one release of
-the Yocto Project to the next.
+Project releases and codenames at
+:yocto_wiki:`/Releases`.
 
 Stable Release Process
 ======================
@@ -84,14 +82,14 @@ stable release.
    bug fixes and security fixes only. Policy dictates that features are
    not backported to a stable release. This policy means generic recipe
    version upgrades are unlikely to be accepted for backporting. The
-   exception to this policy occurs when there is a strong reason such as
+   exception to this policy occurs when a strong reason exists such as
    the fix happens to also be the preferred upstream approach.
 
 Stable release branches have strong maintenance for about a year after
 their initial release. Should significant issues be found for any
 release regardless of its age, fixes could be backported to older
 releases. For issues that are not backported given an older release,
-Community LTS trees and branches allow community members to share
+Community LTS trees and branches exist where community members share
 patches for older releases. However, these types of patches do not go
 through the same release process as do point releases. You can find more
 information about stable branch maintenance at
@@ -117,17 +115,17 @@ consists of the following pieces:
 -  ``bitbake-selftest``: A standalone command that runs unit tests on
    key pieces of BitBake and its fetchers.
 
--  :ref:`ref-classes-sanity`: This automatically
+-  :ref:`sanity.bbclass <ref-classes-sanity>`: This automatically
    included class checks the build environment for missing tools (e.g.
    ``gcc``) or common misconfigurations such as
    :term:`MACHINE` set incorrectly.
 
--  :ref:`ref-classes-insane`: This class checks the
+-  :ref:`insane.bbclass <ref-classes-insane>`: This class checks the
    generated output from builds for sanity. For example, if building for
    an ARM target, did the build produce ARM binaries. If, for example,
    the build produced PPC binaries then there is a problem.
 
--  :ref:`ref-classes-testimage`: This class
+-  :ref:`testimage.bbclass <ref-classes-testimage*>`: This class
    performs runtime testing of images after they are built. The tests
    are usually used with :doc:`QEMU </dev-manual/qemu>`
    to boot the images and check the combined runtime result boot
@@ -166,8 +164,9 @@ repository.
 
 .. note::
 
-   You can find all these branches in the
-   :ref:`overview-manual/development-environment:yocto project source repositories`.
+   You can find all these branches in the Yocto Project
+   Source Repositories
+   .
 
 Testing within these public branches ensures in a publicly visible way
 that all of the main supposed architectures and recipes in OE-Core

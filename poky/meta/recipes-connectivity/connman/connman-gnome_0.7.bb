@@ -1,7 +1,7 @@
 SUMMARY = "GTK+ frontend for the ConnMan network connection manager"
 HOMEPAGE = "http://connman.net/"
 SECTION = "libs/network"
-LICENSE = "GPL-2.0-only & LGPL-2.1-only"
+LICENSE = "GPLv2 & LGPLv2.1"
 LIC_FILES_CHKSUM = "file://COPYING;md5=eb723b61539feef013de476e68b5c50a \
                     file://properties/main.c;beginline=1;endline=20;md5=50c77c81871308b033ab7a1504626afb \
                     file://common/connman-dbus.c;beginline=1;endline=20;md5=de6b485c0e717a0236402d220187717a"
@@ -23,8 +23,8 @@ S = "${WORKDIR}/git"
 inherit autotools-brokensep gtk-icon-cache pkgconfig features_check
 ANY_OF_DISTRO_FEATURES = "${GTK3DISTROFEATURES}"
 
-RDEPENDS:${PN} = "connman"
+RDEPENDS_${PN} = "connman"
 
-do_install:append() {
+do_install_append() {
     install -m 0644 ${WORKDIR}/images/* ${D}/usr/share/icons/hicolor/22x22/apps/
 }

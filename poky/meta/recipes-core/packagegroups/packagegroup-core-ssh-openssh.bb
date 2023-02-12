@@ -3,4 +3,4 @@ PR = "r1"
 
 inherit packagegroup
 
-RDEPENDS:${PN} = "openssh"
+RDEPENDS_${PN} = "openssh"

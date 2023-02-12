@@ -1,12 +1,10 @@
 require gmp.inc
 
-LICENSE = "GPL-2.0-or-later | LGPL-3.0-or-later"
+LICENSE = "GPLv2+ | LGPLv3+"
 
-LIC_FILES_CHKSUM = "\
-        file://COPYING;md5=d32239bcb673463ab874e80d47fae504 \
-        file://COPYING.LESSERv3;md5=6a6a8e020838b23406c81b19c1d46df6 \
-        file://COPYINGv2;md5=b234ee4d69f5fce4486a80fdaf4a4263 \
-        file://COPYINGv3;md5=11cc2d3ee574f9d6b7ee797bdce4d423 \
+LIC_FILES_CHKSUM = "file://COPYING;md5=d32239bcb673463ab874e80d47fae504 \
+                   file://COPYING.LESSERv3;md5=6a6a8e020838b23406c81b19c1d46df6 \
+                   file://COPYINGv2;md5=b234ee4d69f5fce4486a80fdaf4a4263 \
 "
 
 REVISION = ""
@@ -22,16 +20,16 @@ SRC_URI[sha256sum] = "eae9326beb4158c386e39a356818031bd28f3124cf915f8c5b1dc4c7a3
 acpaths = ""
 
 EXTRA_OECONF += " --enable-cxx=detect"
-EXTRA_OECONF:append:mipsarchr6 = " --disable-assembly"
+EXTRA_OECONF_mipsarchr6_append = " --disable-assembly"
 
 PACKAGES =+ "libgmpxx"
-FILES:libgmpxx = "${libdir}/libgmpxx${SOLIBS}"
+FILES_libgmpxx = "${libdir}/libgmpxx${SOLIBS}"
 
-do_install:append() {
+do_install_append() {
 	oe_multilib_header gmp.h
 }
 
-do_install:prepend:class-target() {
+do_install_prepend_class-target() {
         sed -i \
         -e "s|--sysroot=${STAGING_DIR_HOST}||g" \
         -e "s|${DEBUG_PREFIX_MAP}||g" \

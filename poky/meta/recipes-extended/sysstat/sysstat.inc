@@ -1,7 +1,7 @@
 SUMMARY = "System performance tools"
 DESCRIPTION = "The sysstat utilities are a collection of performance monitoring tools for Linux."
 HOMEPAGE = "http://sebastien.godard.pagesperso-orange.fr/"
-LICENSE = "GPL-2.0-or-later"
+LICENSE = "GPLv2+"
 SECTION = "console/utils"
 
 SRC_URI = "http://pagesperso-orange.fr/sebastien.godard/${BP}.tar.xz \
@@ -23,11 +23,7 @@ PACKAGECONFIG[systemd] = "--with-systemdsystemunitdir=${systemd_system_unitdir}"
 
 EXTRA_OECONF += "--disable-stripping"
 
-SYSTEMD_PACKAGES = "${PN}"
-SYSTEMD_SERVICE:${PN} = "sysstat.service"
-SYSTEMD_AUTO_ENABLE = "enable"
-
-do_configure:prepend() {
+do_configure_prepend() {
     export sa_lib_dir=${libexecdir}/sa
 }
 
@@ -51,14 +47,14 @@ do_install() {
 		# Unless both cron and systemd are enabled, install our own
 		# systemd unit file. Otherwise the package will install one.
 	        if ${@bb.utils.contains('PACKAGECONFIG', 'cron systemd', 'false', 'true', d)}; then
-			install -d ${D}${systemd_system_unitdir}
-			install -m 0644 ${WORKDIR}/sysstat.service ${D}${systemd_system_unitdir}
-			sed -i -e 's#@LIBEXECDIR@#${libexecdir}#g' ${D}${systemd_system_unitdir}/sysstat.service
+			install -d ${D}${systemd_unitdir}/system
+			install -m 0644 ${WORKDIR}/sysstat.service ${D}${systemd_unitdir}/system
+			sed -i -e 's#@LIBEXECDIR@#${libexecdir}#g' ${D}${systemd_unitdir}/system/sysstat.service
 	        fi
 	fi
 }
 
-pkg_postinst:${PN} () {
+pkg_postinst_${PN} () {
 	if [  ! -n "$D" ]; then
 		if [ -e /etc/init.d/populate-volatile.sh ]; then
 			/etc/init.d/populate-volatile.sh update
@@ -66,6 +62,6 @@ pkg_postinst:${PN} () {
 	fi
 }
 
-FILES:${PN} += "${systemd_system_unitdir} ${nonarch_base_libdir}/systemd"
+FILES_${PN} += "${systemd_system_unitdir} ${nonarch_base_libdir}/systemd"
 
 TARGET_CC_ARCH += "${LDFLAGS}"

@@ -6,19 +6,24 @@ application code."
 SECTION = "bootloaders"
 DEPENDS += "flex-native bison-native"
 
-LICENSE = "GPL-2.0-or-later"
-LIC_FILES_CHKSUM = "file://Licenses/README;md5=2ca5f2c35c8cc335f0a19756634782f1"
+LICENSE = "GPLv2+"
+LIC_FILES_CHKSUM = "file://Licenses/README;md5=5a7450c57ffe5ae63fd732446b988025"
 PE = "1"
 
 # We use the revision in order to avoid having to fetch it from the
 # repo during parse
-SRCREV = "e092e3250270a1016c877da7bdd9384f14b1321e"
+SRCREV = "c4fddedc48f336eabc4ce3f74940e6aa372de18c"
 
-SRC_URI = "git://source.denx.de/u-boot/u-boot.git;protocol=https;branch=master"
+SRC_URI = "git://git.denx.de/u-boot.git;branch=master \
+           file://0001-add-valid-fdt-check.patch \
+           file://CVE-2021-27097-1.patch \
+           file://CVE-2021-27097-2.patch \
+           file://CVE-2021-27097-3.patch \
+           file://CVE-2021-27097-4.patch \
+           file://CVE-2021-27138-1.patch \
+           file://CVE-2021-27138-2.patch \
+          "
 
 S = "${WORKDIR}/git"
 B = "${WORKDIR}/build"
-
-inherit pkgconfig
-
 do_configure[cleandirs] = "${B}"

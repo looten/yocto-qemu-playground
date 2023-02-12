@@ -27,7 +27,7 @@ which looks like::
          "TEMPLATE" : "arch-qemu",
          "step1" : {
                "extravars" : [
-                     "IMAGE_FSTYPES:append = ' wic wic.bmap'"
+                     "IMAGE_FSTYPES_append = ' wic wic.bmap'"
                     ]
         }
    },
@@ -56,7 +56,7 @@ the "templates" section, which looks like::
 
 Combining these two entries you can see that "qemux86-64" is a three step build where the
 ``bitbake BBTARGETS`` would be run, then ``bitbake SANITYTARGETS`` for each step; all for
-``MACHINE="qemux86-64"`` but with differing SDKMACHINE settings. In step
+``MACHINE="qemx86-64"`` but with differing SDKMACHINE settings. In step
 1 an extra variable is added to the ``auto.conf`` file to enable wic
 image generation.
 

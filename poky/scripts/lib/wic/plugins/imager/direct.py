@@ -77,8 +77,7 @@ class DirectPlugin(ImagerPlugin):
 
         image_path = self._full_path(self.workdir, self.parts[0].disk, "direct")
         self._image = PartitionedImage(image_path, self.ptable_format,
-                                       self.parts, self.native_sysroot,
-                                       options.extra_space)
+                                       self.parts, self.native_sysroot)
 
     def setup_workdir(self, workdir):
         if workdir:
@@ -117,7 +116,7 @@ class DirectPlugin(ImagerPlugin):
         updated = False
         for part in self.parts:
             if not part.realnum or not part.mountpoint \
-               or part.mountpoint == "/" or not (part.mountpoint.startswith('/') or part.mountpoint == "swap"):
+               or part.mountpoint == "/":
                 continue
 
             if part.use_uuid:
@@ -138,9 +137,8 @@ class DirectPlugin(ImagerPlugin):
                 device_name = "/dev/%s%s%d" % (part.disk, prefix, part.realnum)
 
             opts = part.fsopts if part.fsopts else "defaults"
-            passno = part.fspassno if part.fspassno else "0"
             line = "\t".join([device_name, part.mountpoint, part.fstype,
-                              opts, "0", passno]) + "\n"
+                              opts, "0", "0"]) + "\n"
 
             fstab_lines.append(line)
             updated = True
@@ -149,9 +147,6 @@ class DirectPlugin(ImagerPlugin):
             self.updated_fstab_path = os.path.join(self.workdir, "fstab")
             with open(self.updated_fstab_path, "w") as f:
                 f.writelines(fstab_lines)
-            if os.getenv('SOURCE_DATE_EPOCH'):
-                fstab_time = int(os.getenv('SOURCE_DATE_EPOCH'))
-                os.utime(self.updated_fstab_path, (fstab_time, fstab_time))
 
     def _full_path(self, path, name, extention):
         """ Construct full file path to a file we generate. """
@@ -263,7 +258,7 @@ class DirectPlugin(ImagerPlugin):
             if part.mountpoint == "/":
                 if part.uuid:
                     return "PARTUUID=%s" % part.uuid
-                elif part.label and self.ptable_format != 'msdos':
+                elif part.label:
                     return "PARTLABEL=%s" % part.label
                 else:
                     suffix = 'p' if part.disk.startswith('mmcblk') else ''
@@ -300,7 +295,7 @@ class PartitionedImage():
     Partitioned image in a file.
     """
 
-    def __init__(self, path, ptable_format, partitions, native_sysroot=None, extra_space=0):
+    def __init__(self, path, ptable_format, partitions, native_sysroot=None):
         self.path = path  # Path to the image file
         self.numpart = 0  # Number of allocated partitions
         self.realpart = 0 # Number of partitions in the partition table
@@ -321,7 +316,6 @@ class PartitionedImage():
         self.sector_size = SECTOR_SIZE
         self.native_sysroot = native_sysroot
         num_real_partitions = len([p for p in self.partitions if not p.no_table])
-        self.extra_space = extra_space
 
         # calculate the real partition number, accounting for partitions not
         # in the partition table and logical partitions
@@ -491,7 +485,6 @@ class PartitionedImage():
             self.min_size += GPT_OVERHEAD
 
         self.min_size *= self.sector_size
-        self.min_size += self.extra_space
 
     def _create_partition(self, device, parttype, fstype, start, size):
         """ Create a partition on an image described by the 'device' object. """

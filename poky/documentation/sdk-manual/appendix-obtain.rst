@@ -4,22 +4,8 @@
 Obtaining the SDK
 *****************
 
-Working with the SDK components directly in a Yocto build
-=========================================================
-
-Please refer to section
-":ref:`sdk-manual/extensible:Setting up the Extensible SDK environment directly in a Yocto build`"
-
-Note that to use this feature effectively either a powerful build
-machine, or a well-functioning sstate cache infrastructure is required:
-otherwise significant time could be spent waiting for components to be built
-by BitBake from source code.
-
-Working with standalone SDK Installers
-======================================
-
 Locating Pre-Built SDK Installers
----------------------------------
+=================================
 
 You can use existing, pre-built toolchains by locating and running an
 SDK installer script that ships with the Yocto Project. Using this
@@ -39,7 +25,8 @@ Follow these steps to locate and hand-install the toolchain:
    download the installer appropriate for your build host, target
    hardware, and image type.
 
-   The installer files (``*.sh``) follow this naming convention::
+   The installer files (``*.sh``) follow this naming convention:
+   ::
 
       poky-glibc-host_system-core-image-type-arch-toolchain[-ext]-release.sh
 
@@ -68,13 +55,15 @@ Follow these steps to locate and hand-install the toolchain:
 
    For example, if your build host is a 64-bit x86 system and you need
    an extended SDK for a 64-bit core2 target, go into the ``x86_64``
-   folder and download the following installer::
+   folder and download the following installer:
+   ::
 
       poky-glibc-x86_64-core-image-sato-core2-64-toolchain-ext-&DISTRO;.sh
 
 4. *Run the Installer:* Be sure you have execution privileges and run
    the installer. Following is an example from the ``Downloads``
-   directory::
+   directory:
+   ::
 
       $ ~/Downloads/poky-glibc-x86_64-core-image-sato-core2-64-toolchain-ext-&DISTRO;.sh
 
@@ -86,7 +75,7 @@ Follow these steps to locate and hand-install the toolchain:
    section for more information.
 
 Building an SDK Installer
--------------------------
+=========================
 
 As an alternative to locating and downloading an SDK installer, you can
 build the SDK installer. Follow these steps:
@@ -143,7 +132,8 @@ build the SDK installer. Follow these steps:
       using to build the installer. If
       SDKMACHINE
       is not set appropriately, the build fails and provides an error
-      message similar to the following::
+      message similar to the following:
+      ::
 
               The extensible SDK can currently only be built for the same architecture as the machine being built on - SDK_ARCH is
               set to i686 (likely via setting SDKMACHINE) which is different from the architecture of the build machine (x86_64).
@@ -152,11 +142,10 @@ build the SDK installer. Follow these steps:
 
 6. *Build the SDK Installer:* To build the SDK installer for a standard
    SDK and populate the SDK image, use the following command form. Be
-   sure to replace ``image`` with an image (e.g. "core-image-sato")::
-
-      $ bitbake image -c populate_sdk
-
-   You can do the same for the extensible SDK using this command form::
+   sure to replace image with an image (e.g. "core-image-sato"): $
+   bitbake image -c populate_sdk You can do the same for the extensible
+   SDK using this command form:
+   ::
 
       $ bitbake image -c populate_sdk_ext
 
@@ -177,11 +166,12 @@ build the SDK installer. Follow these steps:
          SDK installer. Doing so ensures that the eventual SDK
          installation process installs the appropriate library packages
          as part of the SDK. Following is an example using ``libc``
-         static development libraries: TOOLCHAIN_TARGET_TASK:append = "
+         static development libraries: TOOLCHAIN_TARGET_TASK_append = "
          libc-staticdev"
 
 7. *Run the Installer:* You can now run the SDK installer from
-   ``tmp/deploy/sdk`` in the Build Directory. Following is an example::
+   ``tmp/deploy/sdk`` in the Build Directory. Following is an example:
+   ::
 
       $ cd poky/build/tmp/deploy/sdk
       $ ./poky-glibc-x86_64-core-image-sato-core2-64-toolchain-ext-&DISTRO;.sh
@@ -221,7 +211,8 @@ Follow these steps to extract the root filesystem:
    which you can use with QEMU directly.
 
    The pre-built root filesystem image files follow these naming
-   conventions::
+   conventions:
+   ::
 
       core-image-profile-arch.tar.bz2
 
@@ -242,7 +233,8 @@ Follow these steps to extract the root filesystem:
 
    For example, if you plan on using a BeagleBone device as your target
    hardware and your image is a ``core-image-sato-sdk`` image, you can
-   download the following file::
+   download the following file:
+   ::
 
       core-image-sato-sdk-beaglebone-yocto.tar.bz2
 
@@ -254,7 +246,8 @@ Follow these steps to extract the root filesystem:
    installed the toolchain (e.g. ``poky_sdk``).
 
    Following is an example based on the toolchain installed in the
-   ":ref:`sdk-manual/appendix-obtain:locating pre-built sdk installers`" section::
+   ":ref:`sdk-manual/appendix-obtain:locating pre-built sdk installers`" section:
+   ::
 
       $ source poky_sdk/environment-setup-core2-64-poky-linux
 
@@ -265,11 +258,12 @@ Follow these steps to extract the root filesystem:
    from a previously built root filesystem image that was downloaded
    from the :yocto_dl:`Index of Releases </releases/yocto/yocto-&DISTRO;/machines/>`.
    This command extracts the root filesystem into the ``core2-64-sato``
-   directory::
+   directory:
+   ::
 
       $ runqemu-extract-sdk ~/Downloads/core-image-sato-sdk-beaglebone-yocto.tar.bz2 ~/beaglebone-sato
 
-   You could now point to the target sysroot at ``beaglebone-sato``.
+   You could now point to the target sysroot at ``beablebone-sato``.
 
 Installed Standard SDK Directory Structure
 ==========================================
@@ -279,7 +273,8 @@ install the Standard SDK by running the ``*.sh`` SDK installation
 script:
 
 .. image:: figures/sdk-installed-standard-sdk-directory.png
-   :scale: 100%
+   :scale: 80%
+   :align: center
 
 The installed SDK consists of an environment setup script for the SDK, a
 configuration file for the target, a version file for the target, and

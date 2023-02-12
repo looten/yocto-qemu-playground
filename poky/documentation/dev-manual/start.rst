@@ -36,7 +36,7 @@ particular working environment and set of practices.
     equipment together and set up your development environment's
     hardware topology.
 
-    Here are possible roles:
+    The following roles exist:
 
     -  *Application Developer:* This type of developer does application
        level work on top of an existing software stack.
@@ -99,7 +99,8 @@ particular working environment and set of practices.
     .. note::
 
        The setup of these services is beyond the scope of this manual.
-       However, here are sites describing how to perform setup:
+       However, sites such as the following exist that describe how to
+       perform setup:
 
        -  `Gitolite <https://gitolite.com>`__: Information for
           ``gitolite``.
@@ -189,7 +190,7 @@ particular working environment and set of practices.
     develop locally using their primary development system.
 
 9.  *Document Policies and Change Flow:* The Yocto Project uses a
-    hierarchical structure and a pull model. There are scripts to create and
+    hierarchical structure and a pull model. Scripts exist to create and
     send pull requests (i.e. ``create-pull-request`` and
     ``send-pull-request``). This model is in line with other open source
     projects where maintainers are responsible for specific areas of the
@@ -214,8 +215,8 @@ particular working environment and set of practices.
     someone else in the community needs them also.
 
 10. *Development Environment Summary:* Aside from the previous steps,
-    here are best practices within the Yocto Project development
-    environment:
+    some best practices exist within the Yocto Project development
+    environment. Consider the following:
 
     -  Use :ref:`overview-manual/development-environment:git` as the source control
        system.
@@ -267,16 +268,16 @@ development using the Yocto Project. Your build host can be a native
 Linux machine (recommended), it can be a machine (Linux, Mac, or
 Windows) that uses `CROPS <https://github.com/crops/poky-container>`__,
 which leverages `Docker Containers <https://www.docker.com/>`__ or it
-can be a Windows machine capable of running version 2 of Windows Subsystem
-For Linux (WSL 2).
+can be a Windows machine capable of running Windows Subsystem For Linux
+v2 (WSL).
 
 .. note::
 
-   The Yocto Project is not compatible with version 1 of
-   `Windows Subsystem for Linux <https://en.wikipedia.org/wiki/Windows_Subsystem_for_Linux>`__.
-   It is compatible but neither officially supported nor validated with
-   WSL 2. If you still decide to use WSL please upgrade to
-   `WSL 2 <https://learn.microsoft.com/en-us/windows/wsl/install>`__.
+   The Yocto Project is not compatible with
+   `Windows Subsystem for Linux v1 <https://en.wikipedia.org/wiki/Windows_Subsystem_for_Linux>`__.
+   It is compatible but not officially supported nor validated with
+   WSLv2. If you still decide to use WSL please upgrade to
+   `WSLv2 <https://docs.microsoft.com/en-us/windows/wsl/install-win10>`__.
 
 Once your build host is set up to use the Yocto Project, further steps
 are necessary depending on what you want to accomplish. See the
@@ -311,7 +312,7 @@ Project Build Host:
 
 3. *Meet Minimal Version Requirements:* The OpenEmbedded build system
    should be able to run on any modern distribution that has the
-   following versions for Git, tar, Python, gcc and make.
+   following versions for Git, tar, Python and gcc.
 
    -  Git &MIN_GIT_VERSION; or greater
 
@@ -321,12 +322,10 @@ Project Build Host:
 
    -  gcc &MIN_GCC_VERSION; or greater.
 
-   -  GNU make &MIN_MAKE_VERSION; or greater
-
-   If your build host does not meet any of these listed version
+   If your build host does not meet any of these three listed version
    requirements, you can take steps to prepare the system so that you
    can still use the Yocto Project. See the
-   ":ref:`ref-manual/system-requirements:required git, tar, python, make and gcc versions`"
+   ":ref:`ref-manual/system-requirements:required git, tar, python and gcc versions`"
    section in the Yocto Project Reference Manual for information.
 
 4. *Install Development Host Packages:* Required development host
@@ -388,28 +387,36 @@ as your Yocto Project build host:
    software. Follow the instructions for your specific machine and the
    type of the software you need to install:
 
-   -  Install `Docker Desktop on
+   -  Install `Docker CE for
       Windows <https://docs.docker.com/docker-for-windows/install/#install-docker-desktop-on-windows>`__
       for Windows build hosts that meet requirements.
 
-   -  Install `Docker Desktop on
+   -  Install `Docker CE for
       MacOs <https://docs.docker.com/docker-for-mac/install/#install-and-run-docker-desktop-on-mac>`__
       for Mac build hosts that meet requirements.
 
-   -  Install `Docker Engine on
-      CentOS <https://docs.docker.com/engine/install/centos/>`__
+   -  Install `Docker Toolbox for
+      Windows <https://docs.docker.com/toolbox/toolbox_install_windows/>`__
+      for Windows build hosts that do not meet Docker requirements.
+
+   -  Install `Docker Toolbox for
+      MacOS <https://docs.docker.com/toolbox/toolbox_install_mac/>`__
+      for Mac build hosts that do not meet Docker requirements.
+
+   -  Install `Docker CE for
+      CentOS <https://docs.docker.com/install/linux/docker-ce/centos/>`__
       for Linux build hosts running the CentOS distribution.
 
-   -  Install `Docker Engine on
-      Debian <https://docs.docker.com/engine/install/debian/>`__
+   -  Install `Docker CE for
+      Debian <https://docs.docker.com/install/linux/docker-ce/debian/>`__
       for Linux build hosts running the Debian distribution.
 
-   -  Install `Docker Engine for
-      Fedora <https://docs.docker.com/engine/install/fedora/>`__
+   -  Install `Docker CE for
+      Fedora <https://docs.docker.com/install/linux/docker-ce/fedora/>`__
       for Linux build hosts running the Fedora distribution.
 
-   -  Install `Docker Engine for
-      Ubuntu <https://docs.docker.com/engine/install/ubuntu/>`__
+   -  Install `Docker CE for
+      Ubuntu <https://docs.docker.com/install/linux/docker-ce/ubuntu/>`__
       for Linux build hosts running the Ubuntu distribution.
 
 5. *Optionally Orient Yourself With Docker:* If you are unfamiliar with
@@ -441,36 +448,35 @@ Kit (eSDK) manual. If you are going to use the Toaster container, see
 the ":doc:`/toaster-manual/setup-and-use`"
 section in the Toaster User Manual.
 
-Setting Up to Use Windows Subsystem For Linux (WSL 2)
+Setting Up to Use Windows Subsystem For Linux (WSLv2)
 -----------------------------------------------------
 
-With `Windows Subsystem for Linux (WSL 2)
-<https://learn.microsoft.com/en-us/windows/wsl/>`__,
+With `Windows Subsystem for Linux
+(WSLv2) <https://docs.microsoft.com/en-us/windows/wsl/wsl2-about>`__,
 you can create a Yocto Project development environment that allows you
 to build on Windows. You can set up a Linux distribution inside Windows
 in which you can develop using the Yocto Project.
 
-Follow these general steps to prepare a Windows machine using WSL 2 as
+Follow these general steps to prepare a Windows machine using WSLv2 as
 your Yocto Project build host:
 
-1. *Make sure your Windows machine is capable of running WSL 2:*
-
-   While all Windows 11 and Windows Server 2022 builds support WSL 2,
-   the first versions of Windows 10 and Windows Server 2019 didn't.
-   Check the minimum build numbers for `Windows 10
-   <https://learn.microsoft.com/en-us/windows/wsl/install-manual#step-2---check-requirements-for-running-wsl-2>`__
-   and for `Windows Server 2019
-   <https://learn.microsoft.com/en-us/windows/wsl/install-on-server>`__.
-
-   To check which build version you are running, you may open a command
-   prompt on Windows and execute the command "ver"::
+1. *Make sure your Windows 10 machine is capable of running WSLv2:*
+   WSLv2 is only available for Windows 10 builds > 18917. To check which
+   build version you are running, you may open a command prompt on
+   Windows and execute the command "ver".
+   ::
 
       C:\Users\myuser> ver
 
       Microsoft Windows [Version 10.0.19041.153]
 
-2. *Install the Linux distribution of your choice inside WSL 2:*
-   Once you know your version of Windows supports WSL 2, you can
+   If your build is capable of running
+   WSLv2 you may continue, for more information on this subject or
+   instructions on how to upgrade to WSLv2 visit `Windows 10
+   WSLv2 <https://docs.microsoft.com/en-us/windows/wsl/wsl2-install>`__
+
+2. *Install the Linux distribution of your choice inside Windows 10:*
+   Once you know your version of Windows 10 supports WSLv2, you can
    install the distribution of your choice from the Microsoft Store.
    Open the Microsoft Store and search for Linux. While there are
    several Linux distributions available, the assumption is that your
@@ -479,33 +485,37 @@ your Yocto Project build host:
    making your selection, simply click "Get" to download and install the
    distribution.
 
-3. *Check which Linux distribution WSL 2 is using:* Open a Windows
-   PowerShell and run::
+3. *Check your Linux distribution is using WSLv2:* Open a Windows
+   PowerShell and run:
+   ::
 
       C:\WINDOWS\system32> wsl -l -v
       NAME    STATE   VERSION
       *Ubuntu Running 2
 
-   Note that WSL 2 supports running as many different Linux distributions
-   as you want to install.
+   Note the version column which says the WSL version
+   being used by your distribution, on compatible systems, this can be
+   changed back at any point in time.
 
-4. *Optionally Get Familiar with WSL:* You can learn more on
+4. *Optionally Orient Yourself on WSL:* If you are unfamiliar with WSL,
+   you can learn more here -
    https://docs.microsoft.com/en-us/windows/wsl/wsl2-about.
 
 5. *Launch your WSL Distibution:* From the Windows start menu simply
    launch your WSL distribution just like any other application.
 
-6. *Optimize your WSL 2 storage often:* Due to the way storage is
-   handled on WSL 2, the storage space used by the underlying Linux
-   distribution is not reflected immediately, and since BitBake heavily
+6. *Optimize your WSLv2 storage often:* Due to the way storage is
+   handled on WSLv2, the storage space used by the undelying Linux
+   distribution is not reflected immedately, and since bitbake heavily
    uses storage, after several builds, you may be unaware you are
-   running out of space. As WSL 2 uses a VHDX file for storage, this issue
-   can be easily avoided by regularly optimizing this file in a manual way:
+   running out of space. WSLv2 uses a VHDX file for storage, this issue
+   can be easily avoided by manually optimizing this file often, this
+   can be done in the following way:
 
-   1. *Find the location of your VHDX file:*
-
-      First you need to find the distro app package directory, to achieve this
-      open a Windows Powershell as Administrator and run::
+   1. *Find the location of your VHDX file:* First you need to find the
+      distro app package directory, to achieve this open a Windows
+      Powershell as Administrator and run:
+      ::
 
          C:\WINDOWS\system32> Get-AppxPackage -Name "*Ubuntu*" | Select PackageFamilyName
          PackageFamilyName
@@ -515,53 +525,37 @@ your Yocto Project build host:
 
       You should now
       replace the PackageFamilyName and your user on the following path
-      to find your VHDX file::
+      to find your VHDX file:
+      ::
 
-         ls C:\Users\myuser\AppData\Local\Packages\CanonicalGroupLimited.UbuntuonWindows_79abcdefgh\LocalState\
-         Mode                 LastWriteTime         Length Name
-         -a----         3/14/2020   9:52 PM    57418973184 ext4.vhdx
+          ls C:\Users\myuser\AppData\Local\Packages\CanonicalGroupLimited.UbuntuonWindows_79abcdefgh\LocalState\
+          Mode                 LastWriteTime         Length Name
+          -a----         3/14/2020   9:52 PM    57418973184 ext4.vhdx
 
       Your VHDX file path is:
       ``C:\Users\myuser\AppData\Local\Packages\CanonicalGroupLimited.UbuntuonWindows_79abcdefgh\LocalState\ext4.vhdx``
 
-   2a. *Optimize your VHDX file using Windows Powershell:*
-
-       To use the ``optimize-vhd`` cmdlet below, first install the Hyper-V
-       option on Windows. Then, open a Windows Powershell as Administrator to
-       optimize your VHDX file, shutting down WSL first::
+   2. *Optimize your VHDX file:* Open a Windows Powershell as
+      Administrator to optimize your VHDX file, shutting down WSL first:
+      ::
 
          C:\WINDOWS\system32> wsl --shutdown
          C:\WINDOWS\system32> optimize-vhd -Path C:\Users\myuser\AppData\Local\Packages\CanonicalGroupLimited.UbuntuonWindows_79abcdefgh\LocalState\ext4.vhdx -Mode full
 
-       A progress bar should be shown while optimizing the
-       VHDX file, and storage should now be reflected correctly on the
-       Windows Explorer.
-
-   2b. *Optimize your VHDX file using DiskPart:*
-
-       The ``optimize-vhd`` cmdlet noted in step 2a above is provided by
-       Hyper-V. Not all SKUs of Windows can install Hyper-V. As an alternative,
-       use the DiskPart tool. To start, open a Windows command prompt as
-       Administrator to optimize your VHDX file, shutting down WSL first::
-
-         C:\WINDOWS\system32> wsl --shutdown
-         C:\WINDOWS\system32> diskpart
-
-         DISKPART> select vdisk file="<path_to_VHDX_file>"
-         DISKPART> attach vdisk readonly
-         DISKPART> compact vdisk
-         DISKPART> exit
+      A progress bar should be shown while optimizing the
+      VHDX file, and storage should now be reflected correctly on the
+      Windows Explorer.
 
 .. note::
 
-   The current implementation of WSL 2 does not have out-of-the-box
+   The current implementation of WSLv2 does not have out-of-the-box
    access to external devices such as those connected through a USB
    port, but it automatically mounts your ``C:`` drive on ``/mnt/c/``
    (and others), which you can use to share deploy artifacts to be later
    flashed on hardware through Windows, but your build directory should
    not reside inside this mountpoint.
 
-Once you have WSL 2 set up, everything is in place to develop just as if
+Once you have WSLv2 set up, everything is in place to develop just as if
 you were running on a native Linux machine. If you are going to use the
 Extensible SDK container, see the ":doc:`/sdk-manual/extensible`" Chapter in the Yocto
 Project Application Development and the Extensible Software Development
@@ -625,8 +619,8 @@ of a given component.
 
    The recommended method for accessing Yocto Project components is to
    use Git to clone the upstream repository and work from within that
-   locally cloned repository. However, this section documents how to
-   use a tarball snapshot of any given component.
+   locally cloned repository. The procedure in this section exists
+   should you desire a tarball snapshot of any given component.
 
 Follow these steps to locate and download a particular tarball:
 
@@ -647,7 +641,9 @@ Follow these steps to locate and download a particular tarball:
 
 3. *Find the Tarball:* Drill down to find the associated tarball. For
    example, click on ``yocto-&DISTRO;`` to view files associated with the
-   Yocto Project &DISTRO; release.
+   Yocto Project &DISTRO; release (e.g.
+   ``&YOCTO_POKY;.tar.bz2``, which is the
+   released Poky tarball).
 
 4. *Download the Tarball:* Click the tarball to download and save a
    snapshot of the given component.
@@ -660,6 +656,13 @@ from which you can locate and download tarballs of any Yocto Project
 release. Rather than Git repositories, these files represent snapshot
 tarballs similar to the tarballs located in the Index of Releases
 described in the ":ref:`dev-manual/start:accessing index of releases`" section.
+
+.. note::
+
+   The recommended method for accessing Yocto Project components is to
+   use Git to clone a repository and work from within that local
+   repository. The procedure in this section exists should you desire a
+   tarball snapshot of any given component.
 
 1. *Go to the Yocto Project Website:* Open The
    :yocto_home:`Yocto Project Website <>` in your browser.
@@ -682,6 +685,32 @@ described in the ":ref:`dev-manual/start:accessing index of releases`" section.
 4. *Download Tools or Board Support Packages (BSPs):* From the
    "DOWNLOADS" page, you can download tools or BSPs as well. Just scroll
    down the page and look for what you need.
+
+Accessing Nightly Builds
+------------------------
+
+Yocto Project maintains an area for nightly builds that contains tarball
+releases at https://autobuilder.yocto.io//pub/nightly/. These builds include Yocto
+Project releases ("poky"), toolchains, and builds for supported
+machines.
+
+Should you ever want to access a nightly build of a particular Yocto
+Project component, use the following procedure:
+
+1. *Locate the Index of Nightly Builds:* Open a browser and go to
+   https://autobuilder.yocto.io//pub/nightly/ to access the Nightly Builds.
+
+2. *Select a Date:* Click on the date in which you are interested. If
+   you want the latest builds, use "CURRENT".
+
+3. *Select a Build:* Choose the area in which you are interested. For
+   example, if you are looking for the most recent toolchains, select
+   the "toolchain" link.
+
+4. *Find the Tarball:* Drill down to find the associated tarball.
+
+5. *Download the Tarball:* Click the tarball to download and save a
+   snapshot of the given component.
 
 Cloning and Checking Out Branches
 =================================
@@ -712,7 +741,8 @@ Follow these steps to create a local version of the upstream
 
 2. *Clone the Repository:* The following example command clones the
    ``poky`` repository and uses the default name "poky" for your local
-   repository::
+   repository:
+   ::
 
       $ git clone git://git.yoctoproject.org/poky
       Cloning into 'poky'...
@@ -733,8 +763,9 @@ Follow these steps to create a local version of the upstream
    ":ref:`dev-manual/start:checking out by tag in poky`" sections, respectively.
 
    Once the local repository is created, you can change to that
-   directory and check its status. The ``master`` branch is checked out
-   by default::
+   directory and check its status. Here, the single "master" branch
+   exists on your system and by default, it is checked out:
+   ::
 
       $ cd poky
       $ git status
@@ -795,7 +826,8 @@ and then specifically check out that development branch.
 
 3. *Check out the Branch:* Check out the development branch in which you
    want to work. For example, to access the files for the Yocto Project
-   &DISTRO; Release (&DISTRO_NAME;), use the following command::
+   &DISTRO; Release (&DISTRO_NAME;), use the following command:
+   ::
 
       $ git checkout -b &DISTRO_NAME_NO_CAP; origin/&DISTRO_NAME_NO_CAP;
       Branch &DISTRO_NAME_NO_CAP; set up to track remote branch &DISTRO_NAME_NO_CAP; from origin.
@@ -807,7 +839,8 @@ and then specifically check out that development branch.
 
    The following command displays the branches that are now part of your
    local poky repository. The asterisk character indicates the branch
-   that is currently checked out for work::
+   that is currently checked out for work:
+   ::
 
       $ git branch
         master
@@ -834,12 +867,14 @@ similar to checking out by branch name except you use tag names.
    section.
 
 2. *Fetch the Tag Names:* To checkout the branch based on a tag name,
-   you need to fetch the upstream tags into your local repository::
+   you need to fetch the upstream tags into your local repository:
+   ::
 
       $ git fetch --tags
       $
 
-3. *List the Tag Names:* You can list the tag names now::
+3. *List the Tag Names:* You can list the tag names now:
+   ::
 
       $ git tag
       1.1_M1.final

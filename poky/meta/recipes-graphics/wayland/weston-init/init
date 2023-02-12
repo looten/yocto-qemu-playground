@@ -32,7 +32,7 @@ case "$1" in
         . /etc/profile
 	export HOME=ROOTHOME
 
-        WESTON_USER=weston weston-start $OPTARGS &
+        weston-start -- $OPTARGS
   ;;
 
   stop)

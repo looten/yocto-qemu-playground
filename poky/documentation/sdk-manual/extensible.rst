@@ -15,8 +15,9 @@ hardware, and ease integration into the rest of the
 .. note::
 
    For a side-by-side comparison of main features supported for an
-   extensible SDK as compared to a standard SDK, see the
-   :ref:`sdk-manual/intro:introduction` section.
+   extensible SDK as compared to a standard SDK, see the "
+   Introduction
+   " section.
 
 In addition to the functionality available through ``devtool``, you can
 alternatively make use of the toolchain directly, for example from
@@ -41,42 +42,6 @@ functionality.
 Installing the Extensible SDK
 =============================
 
-Two ways to install the Extensible SDK
---------------------------------------
-
-Extensible SDK can be installed in two different ways, and both have
-their own pros and cons:
-
-1. *Setting up the Extensible SDK environment directly in a Yocto build*. This
-avoids having to produce, test, distribute and maintain separate SDK installer
-archives, which can get very large. There is only one environment for the regular
-Yocto build and the SDK and less code paths where things can go not according to plan.
-It's easier to update the SDK: it simply means updating the Yocto layers with
-git fetch or layer management tooling. The SDK extensibility is better than in the
-second option: just run ``bitbake`` again to add more things to the sysroot, or add layers
-if even more things are required.
-
-2. *Setting up the Extensible SDK from a standalone installer*. This has the benefit of
-having a single, self-contained archive that includes all the needed binary artifacts.
-So nothing needs to be rebuilt, and there is no need to provide a well-functioning
-binary artefact cache over the network for developers with underpowered laptops.
-
-Setting up the Extensible SDK environment directly in a Yocto build
--------------------------------------------------------------------
-
-1. Set up all the needed layers and a Yocto build directory, e.g. a regular Yocto
-   build where ``bitbake`` can be executed.
-
-2. Run:
-    $ bitbake meta-ide-support
-    $ bitbake -c populate_sysroot gtk+3
-    (or any other target or native item that the application developer would need)
-    $ bitbake build-sysroots
-
-
-Setting up the Extensible SDK from a standalone installer
----------------------------------------------------------
-
 The first thing you need to do is install the SDK on your :term:`Build
 Host` by running the ``*.sh`` installation script.
 
@@ -94,7 +59,8 @@ The names of the tarball installer scripts are such that a string
 representing the host system appears first in the filename and then is
 immediately followed by a string representing the target architecture.
 An extensible SDK has the string "-ext" as part of the name. Following
-is the general form::
+is the general form:
+::
 
    poky-glibc-host_system-image_type-arch-toolchain-ext-release_version.sh
 
@@ -117,16 +83,17 @@ is the general form::
 
 For example, the following SDK installer is for a 64-bit
 development host system and a i586-tuned target architecture based off
-the SDK for ``core-image-sato`` and using the current &DISTRO; snapshot::
+the SDK for ``core-image-sato`` and using the current &DISTRO; snapshot:
+::
 
    poky-glibc-x86_64-core-image-sato-i586-toolchain-ext-&DISTRO;.sh
 
 .. note::
 
    As an alternative to downloading an SDK, you can build the SDK
-   installer. For information on building the installer, see the
-   :ref:`sdk-manual/appendix-obtain:building an sdk installer`
-   section.
+   installer. For information on building the installer, see the "
+   Building an SDK Installer
+   " section.
 
 The SDK and toolchains are self-contained and by default are installed
 into the ``poky_sdk`` folder in your home directory. You can choose to
@@ -172,12 +139,7 @@ Running the Extensible SDK Environment Setup Script
 ===================================================
 
 Once you have the SDK installed, you must run the SDK environment setup
-script before you can actually use the SDK.
-
-When using a SDK directly in a Yocto build, you will find the script in
-``tmp/deploy/images/qemux86-64/`` in your build directory.
-
-When using a standalone SDK installer, this setup script resides in
+script before you can actually use the SDK. This setup script resides in
 the directory you chose when you installed the SDK, which is either the
 default ``poky_sdk`` directory or the directory you chose during
 installation.
@@ -188,17 +150,13 @@ begin with the string "``environment-setup``" and include as part of
 their name the tuned target architecture. As an example, the following
 commands set the working directory to where the SDK was installed and
 then source the environment setup script. In this example, the setup
-script is for an IA-based target machine using i586 tuning::
+script is for an IA-based target machine using i586 tuning:
+::
 
    $ cd /home/scottrif/poky_sdk
    $ source environment-setup-core2-64-poky-linux
    SDK environment now set up; additionally you may now run devtool to perform development tasks.
    Run devtool --help for further details.
-
-When using the environment script directly in a Yocto build, it can
-be run similarly:
-
-   $ source tmp/deploy/images/qemux86-64/environment-setup-core2-64-poky-linux
 
 Running the setup script defines many environment variables needed in
 order to use the SDK (e.g. ``PATH``,
@@ -239,7 +197,7 @@ all the commands.
    devtool
    quick reference.
 
-Three ``devtool`` subcommands provide entry-points into
+Three ``devtool`` subcommands exist that provide entry-points into
 development:
 
 -  *devtool add*: Assists in adding new software to be built.
@@ -279,7 +237,7 @@ shows common development flows you would use with the ``devtool add``
 command:
 
 .. image:: figures/sdk-devtool-add-flow.png
-   :width: 100%
+   :align: center
 
 1. *Generating the New Recipe*: The top part of the flow shows three
    scenarios by which you could use ``devtool add`` to generate a recipe
@@ -298,9 +256,10 @@ command:
    -  *Left*: The left scenario in the figure represents a common
       situation where the source code does not exist locally and needs
       to be extracted. In this situation, the source code is extracted
-      to the default workspace --- you do not want the files in some
+      to the default workspace - you do not want the files in some
       specific location outside of the workspace. Thus, everything you
-      need will be located in the workspace::
+      need will be located in the workspace:
+      ::
 
          $ devtool add recipe fetchuri
 
@@ -313,7 +272,7 @@ command:
    -  *Middle*: The middle scenario in the figure also represents a
       situation where the source code does not exist locally. In this
       case, the code is again upstream and needs to be extracted to some
-      local area --- this time outside of the default workspace.
+      local area - this time outside of the default workspace.
 
       .. note::
 
@@ -321,26 +280,28 @@ command:
          devtool
          always creates a Git repository locally during the extraction.
 
-      Furthermore, the first positional argument ``srctree`` in this case
+      Furthermore, the first positional argument srctree in this case
       identifies where the ``devtool add`` command will locate the
       extracted code outside of the workspace. You need to specify an
-      empty directory::
+      empty directory:
+      ::
 
          $ devtool add recipe srctree fetchuri
 
       In summary,
       the source code is pulled from fetchuri and extracted into the
-      location defined by ``srctree`` as a local Git repository.
+      location defined by srctree as a local Git repository.
 
       Within workspace, ``devtool`` creates a recipe named recipe along
       with an associated append file.
 
    -  *Right*: The right scenario in the figure represents a situation
-      where the ``srctree`` has been previously prepared outside of the
+      where the srctree has been previously prepared outside of the
       ``devtool`` workspace.
 
       The following command provides a new recipe name and identifies
-      the existing source tree location::
+      the existing source tree location:
+      ::
 
          $ devtool add recipe srctree
 
@@ -348,7 +309,7 @@ command:
       recipe for the code and places the recipe into the workspace.
 
       Because the extracted source code already exists, ``devtool`` does
-      not try to relocate the source code into the workspace --- only the
+      not try to relocate the source code into the workspace - only the
       new recipe is placed in the workspace.
 
       Aside from a recipe folder, the command also creates an associated
@@ -356,12 +317,13 @@ command:
 
 2. *Edit the Recipe*: You can use ``devtool edit-recipe`` to open up the
    editor as defined by the ``$EDITOR`` environment variable and modify
-   the file::
+   the file:
+   ::
 
       $ devtool edit-recipe recipe
 
    From within the editor, you
-   can make modifications to the recipe that take effect when you build
+   can make modifications to the recipe that take affect when you build
    it later.
 
 3. *Build the Recipe or Rebuild the Image*: The next step you take
@@ -376,7 +338,8 @@ command:
    On the other hand, if you want an image to contain the recipe's
    packages from the workspace for immediate deployment onto a device
    (e.g. for testing purposes), you can use the ``devtool build-image``
-   command::
+   command:
+   ::
 
       $ devtool build-image image
 
@@ -447,7 +410,7 @@ diagram shows common development flows for the ``devtool modify``
 command:
 
 .. image:: figures/sdk-devtool-modify-flow.png
-   :width: 100%
+   :align: center
 
 1. *Preparing to Modify the Code*: The top part of the flow shows three
    scenarios by which you could use ``devtool modify`` to prepare to
@@ -472,7 +435,8 @@ command:
       outside the workspace (i.e. ``meta-``\ layername).
 
       The following command identifies the recipe and, by default,
-      extracts the source files::
+      extracts the source files:
+      ::
 
          $ devtool modify recipe
 
@@ -482,9 +446,9 @@ command:
       locate the source code and any local patch files from other
       developers.
 
-      With this scenario, there is no ``srctree`` argument. Consequently, the
+      With this scenario, no srctree argument exists. Consequently, the
       default behavior of the ``devtool modify`` command is to extract
-      the source files pointed to by the :term:`SRC_URI` statements into a
+      the source files pointed to by the ``SRC_URI`` statements into a
       local Git structure. Furthermore, the location for the extracted
       source is the default area within the ``devtool`` workspace. The
       result is that the command sets up both the source code and an
@@ -492,7 +456,7 @@ command:
       original location.
 
       Additionally, if you have any non-patch local files (i.e. files
-      referred to with ``file://`` entries in :term:`SRC_URI` statement
+      referred to with ``file://`` entries in ``SRC_URI`` statement
       excluding ``*.patch/`` or ``*.diff``), these files are copied to
       an ``oe-local-files`` folder under the newly created source tree.
       Copying the files here gives you a convenient area from which you
@@ -510,7 +474,8 @@ command:
       The following command tells ``devtool`` the recipe with which to
       work and, in this case, identifies a local area for the extracted
       source files that exists outside of the default ``devtool``
-      workspace::
+      workspace:
+      ::
 
          $ devtool modify recipe srctree
 
@@ -522,28 +487,29 @@ command:
          devtool
          command.
 
-      As with all extractions, the command uses the recipe's :term:`SRC_URI`
+      As with all extractions, the command uses the recipe's ``SRC_URI``
       statements to locate the source files and any associated patch
       files. Non-patch files are copied to an ``oe-local-files`` folder
       under the newly created source tree.
 
       Once the files are located, the command by default extracts them
-      into ``srctree``.
+      into srctree.
 
       Within workspace, ``devtool`` creates an append file for the
       recipe. The recipe remains in its original location but the source
-      files are extracted to the location you provide with ``srctree``.
+      files are extracted to the location you provide with srctree.
 
    -  *Right*: The right scenario in the figure represents a situation
-      where the source tree (``srctree``) already exists locally as a
+      where the source tree (srctree) already exists locally as a
       previously extracted Git structure outside of the ``devtool``
       workspace. In this example, the recipe also exists elsewhere
       locally in its own layer.
 
       The following command tells ``devtool`` the recipe with which to
       work, uses the "-n" option to indicate source does not need to be
-      extracted, and uses ``srctree`` to point to the previously extracted
-      source files::
+      extracted, and uses srctree to point to the previously extracted
+      source files:
+      ::
 
          $ devtool modify -n recipe srctree
 
@@ -566,7 +532,8 @@ command:
    depends on what you are going to do with the new code.
 
    If you need to eventually move the build output to the target
-   hardware, use the following ``devtool`` command::
+   hardware, use the following ``devtool`` command:
+   ::
 
       $ devtool build recipe
 
@@ -589,7 +556,8 @@ command:
       development machine.
 
    You can deploy your build output to that target hardware by using the
-   ``devtool deploy-target`` command::
+   ``devtool deploy-target`` command:
+   ::
 
       $ devtool deploy-target recipe target
 
@@ -649,24 +617,24 @@ counterparts.
 .. note::
 
    Several methods exist by which you can upgrade recipes -
-   ``devtool upgrade``
+   devtool upgrade
    happens to be one. You can read about all the methods by which you
-   can upgrade recipes in the
-   :ref:`dev-manual/common-tasks:upgrading recipes` section
-   of the Yocto Project Development Tasks Manual.
+   can upgrade recipes in the "
+   Upgrading Recipes
+   " section of the Yocto Project Development Tasks Manual.
 
 The ``devtool upgrade`` command is flexible enough to allow you to
 specify source code revision and versioning schemes, extract code into
 or out of the ``devtool``
 :ref:`devtool-the-workspace-layer-structure`,
 and work with any source file forms that the
-:ref:`bitbake:bitbake-user-manual/bitbake-user-manual-fetching:fetchers` support.
+:ref:`fetchers <bitbake:bitbake-user-manual/bitbake-user-manual-fetching:fetchers>` support.
 
 The following diagram shows the common development flow used with the
 ``devtool upgrade`` command:
 
 .. image:: figures/sdk-devtool-upgrade-flow.png
-   :width: 100%
+   :align: center
 
 1. *Initiate the Upgrade*: The top part of the flow shows the typical
    scenario by which you use the ``devtool upgrade`` command. The
@@ -683,7 +651,8 @@ The following diagram shows the common development flow used with the
    A common situation is where third-party software has undergone a
    revision so that it has been upgraded. The recipe you have access to
    is likely in your own layer. Thus, you need to upgrade the recipe to
-   use the newer version of the software::
+   use the newer version of the software:
+   ::
 
       $ devtool upgrade -V version recipe
 
@@ -691,9 +660,8 @@ The following diagram shows the common development flow used with the
    code into the ``sources`` directory in the
    :ref:`devtool-the-workspace-layer-structure`.
    If you want the code extracted to any other location, you need to
-   provide the ``srctree`` positional argument with the command as follows::
-
-      $ devtool upgrade -V version recipe srctree
+   provide the srctree positional argument with the command as follows:
+   $ devtool upgrade -V version recipe srctree
 
    .. note::
 
@@ -701,18 +669,18 @@ The following diagram shows the common development flow used with the
       don't use "-V", the command upgrades the recipe to the latest
       version.
 
-   If the source files pointed to by the :term:`SRC_URI` statement in the
+   If the source files pointed to by the ``SRC_URI`` statement in the
    recipe are in a Git repository, you must provide the "-S" option and
    specify a revision for the software.
 
-   Once ``devtool`` locates the recipe, it uses the :term:`SRC_URI` variable
+   Once ``devtool`` locates the recipe, it uses the ``SRC_URI`` variable
    to locate the source code and any local patch files from other
    developers. The result is that the command sets up the source code,
    the new version of the recipe, and an append file all within the
    workspace.
 
    Additionally, if you have any non-patch local files (i.e. files
-   referred to with ``file://`` entries in :term:`SRC_URI` statement
+   referred to with ``file://`` entries in ``SRC_URI`` statement
    excluding ``*.patch/`` or ``*.diff``), these files are copied to an
    ``oe-local-files`` folder under the newly created source tree.
    Copying the files here gives you a convenient area from which you can
@@ -720,9 +688,9 @@ The following diagram shows the common development flow used with the
    are incorporated into the build the next time you build the software
    just as are other changes you might have made to the source.
 
-2. *Resolve any Conflicts created by the Upgrade*: Conflicts could happen
-   after upgrading the software to a new version. Conflicts occur
-   if your recipe specifies some patch files in :term:`SRC_URI` that
+2. *Resolve any Conflicts created by the Upgrade*: Conflicts could exist
+   due to the software being upgraded to a new version. Conflicts occur
+   if your recipe specifies some patch files in ``SRC_URI`` that
    conflict with changes made in the new version of the software. For
    such cases, you need to resolve the conflicts by editing the source
    and following the normal ``git rebase`` conflict resolution process.
@@ -735,14 +703,16 @@ The following diagram shows the common development flow used with the
    depends on what you are going to do with the new code.
 
    If you need to eventually move the build output to the target
-   hardware, use the following ``devtool`` command::
+   hardware, use the following ``devtool`` command:
+   ::
 
       $ devtool build recipe
 
    On the other hand, if you want an image to contain the recipe's
    packages from the workspace for immediate deployment onto a device
    (e.g. for testing purposes), you can use the ``devtool build-image``
-   command::
+   command:
+   ::
 
       $ devtool build-image image
 
@@ -858,7 +828,8 @@ name and version, just the name, or just the version as part of the
 command line.
 
 Sometimes the name or version determined from the source tree might be
-incorrect. For such a case, you must reset the recipe::
+incorrect. For such a case, you must reset the recipe:
+::
 
    $ devtool reset -n recipename
 
@@ -878,13 +849,14 @@ result from naming not being recognized or because the dependency simply
 is not available. For cases where the dependency is not available, you
 must use the ``devtool add`` command to add an additional recipe that
 satisfies the dependency. Once you add that recipe, you need to update
-the :term:`DEPENDS` variable in the original recipe to include the new
+the ``DEPENDS`` variable in the original recipe to include the new
 recipe.
 
 If you need to add runtime dependencies, you can do so by adding the
-following to your recipe::
+following to your recipe:
+::
 
-   RDEPENDS:${PN} += "dependency1 dependency2 ..."
+   RDEPENDS_${PN} += "dependency1 dependency2 ..."
 
 .. note::
 
@@ -907,7 +879,7 @@ license. If so, the command sets the
 :term:`LICENSE` value accordingly.
 You should double-check the value added by the command against the
 documentation or source files for the software you are building and, if
-necessary, update that :term:`LICENSE` value.
+necessary, update that ``LICENSE`` value.
 
 The ``devtool add`` command also sets the
 :term:`LIC_FILES_CHKSUM`
@@ -915,16 +887,16 @@ value to point to all files that appear to be license-related. Realize
 that license statements often appear in comments at the top of source
 files or within the documentation. In such cases, the command does not
 recognize those license statements. Consequently, you might need to
-amend the :term:`LIC_FILES_CHKSUM` variable to point to one or more of those
-comments if present. Setting :term:`LIC_FILES_CHKSUM` is particularly
+amend the ``LIC_FILES_CHKSUM`` variable to point to one or more of those
+comments if present. Setting ``LIC_FILES_CHKSUM`` is particularly
 important for third-party software. The mechanism attempts to ensure
 correct licensing should you upgrade the recipe to a newer upstream
 version in future. Any change in licensing is detected and you receive
 an error prompting you to check the license text again.
 
 If the ``devtool add`` command cannot determine licensing information,
-``devtool`` sets the :term:`LICENSE` value to "CLOSED" and leaves the
-:term:`LIC_FILES_CHKSUM` value unset. This behavior allows you to continue
+``devtool`` sets the ``LICENSE`` value to "CLOSED" and leaves the
+``LIC_FILES_CHKSUM`` value unset. This behavior allows you to continue
 with development even though the settings are unlikely to be correct in
 all cases. You should check the documentation or source files for the
 software you are building to determine the actual license.
@@ -950,12 +922,12 @@ mind:
    hardcoding tools within the toolchain such as ``gcc`` and ``g++``.
 
 -  The environment in which Make runs is set up with various standard
-   variables for compilation (e.g. :term:`CC`, :term:`CXX`, and so forth) in a
+   variables for compilation (e.g. ``CC``, ``CXX``, and so forth) in a
    similar manner to the environment set up by the SDK's environment
    setup script. One easy way to see these variables is to run the
    ``devtool build`` command on the recipe and then look in
-   ``oe-logs/run.do_compile``. Towards the top of this file, there is
-   a list of environment variables that are set. You can take
+   ``oe-logs/run.do_compile``. Towards the top of this file, a list of
+   environment variables exists that are being set. You can take
    advantage of these variables within the Makefile.
 
 -  If the Makefile sets a default for a variable using "=", that default
@@ -966,7 +938,8 @@ mind:
    the command line, add the variable setting to
    :term:`EXTRA_OEMAKE` or
    :term:`PACKAGECONFIG_CONFARGS`
-   within the recipe. Here is an example using :term:`EXTRA_OEMAKE`::
+   within the recipe. Here is an example using ``EXTRA_OEMAKE``:
+   ::
 
       EXTRA_OEMAKE += "'CC=${CC}' 'CXX=${CXX}'"
 
@@ -999,7 +972,7 @@ following methods when you run ``devtool add``:
    Specifying the name like this produces a recipe that only builds for
    the build host.
 
--  Specify the "--also-native" option with the ``devtool add``
+-  Specify the "DASHDASHalso-native" option with the ``devtool add``
    command. Specifying this option creates a recipe file that still
    builds for the target but also creates a variant with a "-native"
    suffix that builds for the build host.
@@ -1010,7 +983,7 @@ following methods when you run ``devtool add``:
    that builds code for the target, you can typically accomplish this by
    building the native and target parts separately rather than within
    the same compilation process. Realize though that with the
-   "--also-native" option, you can add the tool using just one
+   "DASHDASHalso-native" option, you can add the tool using just one
    recipe file.
 
 Adding Node.js Modules
@@ -1020,7 +993,8 @@ You can use the ``devtool add`` command two different ways to add
 Node.js modules: 1) Through ``npm`` and, 2) from a repository or local
 source.
 
-Use the following form to add Node.js modules through ``npm``::
+Use the following form to add Node.js modules through ``npm``:
+::
 
    $ devtool add "npm://registry.npmjs.org;name=forever;version=0.15.1"
 
@@ -1044,7 +1018,8 @@ these behaviors ensure the reproducibility and integrity of the build.
 
 As mentioned earlier, you can also add Node.js modules directly from a
 repository or local source tree. To add modules this way, use
-``devtool add`` in the following form::
+``devtool add`` in the following form:
+::
 
    $ devtool add https://github.com/diversario/node-ssdp
 
@@ -1083,8 +1058,8 @@ If you look at the contents of a recipe, you will see that the recipe
 does not include complete instructions for building the software.
 Instead, common functionality is encapsulated in classes inherited with
 the ``inherit`` directive. This technique leaves the recipe to describe
-just the things that are specific to the software being built. There is
-a :ref:`base <ref-classes-base>` class that
+just the things that are specific to the software being built. A
+:ref:`base <ref-classes-base>` class exists that
 is implicitly inherited by all recipes and provides the functionality
 that most recipes typically need.
 
@@ -1112,7 +1087,7 @@ links created within the source tree:
       ``${``\ :term:`D`\ ``}``.
 
    -  ``sysroot-destdir/``: Contains a subset of files installed within
-      :ref:`ref-tasks-install` that have been put into the shared sysroot. For
+      ``do_install`` that have been put into the shared sysroot. For
       more information, see the
       ":ref:`dev-manual/common-tasks:sharing files between recipes`" section.
 
@@ -1132,21 +1107,21 @@ extras specified by
 :term:`EXTRA_OECONF` or
 :term:`PACKAGECONFIG_CONFARGS`
 set within the recipe. If you wish to pass additional options, add them
-to :term:`EXTRA_OECONF` or :term:`PACKAGECONFIG_CONFARGS`. Other supported build
+to ``EXTRA_OECONF`` or ``PACKAGECONFIG_CONFARGS``. Other supported build
 tools have similar variables (e.g.
 :term:`EXTRA_OECMAKE` for
 CMake, :term:`EXTRA_OESCONS`
 for Scons, and so forth). If you need to pass anything on the ``make``
-command line, you can use :term:`EXTRA_OEMAKE` or the
+command line, you can use ``EXTRA_OEMAKE`` or the
 :term:`PACKAGECONFIG_CONFARGS`
 variables to do so.
 
 You can use the ``devtool configure-help`` command to help you set the
 arguments listed in the previous paragraph. The command determines the
 exact options being passed, and shows them to you along with any custom
-arguments specified through :term:`EXTRA_OECONF` or
-:term:`PACKAGECONFIG_CONFARGS`. If applicable, the command also shows you
-the output of the configure script's "--help" option as a
+arguments specified through ``EXTRA_OECONF`` or
+``PACKAGECONFIG_CONFARGS``. If applicable, the command also shows you
+the output of the configure script's "DASHDASHhelp" option as a
 reference.
 
 Sharing Files Between Recipes
@@ -1156,9 +1131,9 @@ Recipes often need to use files provided by other recipes on the
 :term:`Build Host`. For example,
 an application linking to a common library needs access to the library
 itself and its associated headers. The way this access is accomplished
-within the extensible SDK is through the sysroot. There is one sysroot per
+within the extensible SDK is through the sysroot. One sysroot exists per
 "machine" for which the SDK is being built. In practical terms, this
-means there is a sysroot for the target machine, and a sysroot for
+means a sysroot exists for the target machine, and a sysroot exists for
 the build host.
 
 Recipes should never write files directly into the sysroot. Instead,
@@ -1197,16 +1172,16 @@ the ``oe-workdir/packages-split`` directory, which contains a
 subdirectory for each package. Apart from some advanced cases, the
 :term:`PACKAGES` and
 :term:`FILES` variables controls
-splitting. The :term:`PACKAGES` variable lists all of the packages to be
-produced, while the :term:`FILES` variable specifies which files to include
+splitting. The ``PACKAGES`` variable lists all of the packages to be
+produced, while the ``FILES`` variable specifies which files to include
 in each package by using an override to specify the package. For
-example, ``FILES:${PN}`` specifies the files to go into the main package
+example, ``FILES_${PN}`` specifies the files to go into the main package
 (i.e. the main package has the same name as the recipe and
 ``${``\ :term:`PN`\ ``}`` evaluates to the
-recipe name). The order of the :term:`PACKAGES` value is significant. For
-each installed file, the first package whose :term:`FILES` value matches the
-file is the package into which the file goes. Both the :term:`PACKAGES` and
-:term:`FILES` variables have default values. Consequently, you might find
+recipe name). The order of the ``PACKAGES`` value is significant. For
+each installed file, the first package whose ``FILES`` value matches the
+file is the package into which the file goes. Defaults exist for both
+the ``PACKAGES`` and ``FILES`` variables. Consequently, you might find
 you do not even need to set these variables in your recipe unless the
 software the recipe is building installs files into non-standard
 locations.
@@ -1221,13 +1196,15 @@ need to restore the original files that existed prior to running the
 ``devtool deploy-target`` command. Because the ``devtool deploy-target``
 command backs up any files it overwrites, you can use the
 ``devtool undeploy-target`` command to restore those files and remove
-any other files the recipe deployed. Consider the following example::
+any other files the recipe deployed. Consider the following example:
+::
 
    $ devtool undeploy-target lighttpd root@192.168.7.2
 
 If you have deployed
 multiple applications, you can remove them all using the "-a" option
-thus restoring the target device to its original state::
+thus restoring the target device to its original state:
+::
 
    $ devtool undeploy-target -a root@192.168.7.2
 
@@ -1258,39 +1235,28 @@ populated on-demand. Sometimes you must explicitly install extra items
 into the SDK. If you need these extra items, you can first search for
 the items using the ``devtool search`` command. For example, suppose you
 need to link to libGL but you are not sure which recipe provides libGL.
-You can use the following command to find out::
+You can use the following command to find out:
+::
 
    $ devtool search libGL mesa
-   A free implementation of the OpenGL API
 
-Once you know the recipe
-(i.e. ``mesa`` in this example), you can install it.
-
-When using the extensible SDK directly in a Yocto build
--------------------------------------------------------
-
-In this scenario, the Yocto build tooling, e.g. ``bitbake``
-is directly accessible to build additional items, and it
-can simply be executed directly:
-
-   $ bitbake mesa
-   $ bitbake build-sysroots
-
-When using a standalone installer for the Extensible SDK
---------------------------------------------------------
+A free implementation of the OpenGL API Once you know the recipe
+(i.e. ``mesa`` in this example), you can install it:
+::
 
    $ devtool sdk-install mesa
 
 By default, the ``devtool sdk-install`` command assumes
 the item is available in pre-built form from your SDK provider. If the
 item is not available and it is acceptable to build the item from
-source, you can add the "-s" option as follows::
+source, you can add the "-s" option as follows:
+::
 
    $ devtool sdk-install -s mesa
 
 It is important to remember that building the item from source
 takes significantly longer than installing the pre-built artifact. Also,
-if there is no recipe for the item you want to add to the SDK, you must
+if no recipe exists for the item you want to add to the SDK, you must
 instead add the item using the ``devtool add`` command.
 
 Applying Updates to an Installed Extensible SDK
@@ -1300,7 +1266,8 @@ If you are working with an installed extensible SDK that gets
 occasionally updated (e.g. a third-party SDK), then you will need to
 manually "pull down" the updates into the installed SDK.
 
-To update your installed SDK, use ``devtool`` as follows::
+To update your installed SDK, use ``devtool`` as follows:
+::
 
    $ devtool sdk-update
 

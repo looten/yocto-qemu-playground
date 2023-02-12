@@ -814,7 +814,6 @@
             "shell",
             "smtpd",
             "sqlite3",
-	    "statistics",
             "stringold",
             "syslog",
             "terminal",
@@ -980,8 +979,7 @@
     "pprint": {
         "summary": "Python pretty-print support",
         "rdepends": [
-            "core",
-	    "profile"
+            "core"
         ],
         "files": [
             "${libdir}/python${PYTHON_MAJMIN}/pprint.py"
@@ -1086,20 +1084,6 @@
             "${libdir}/python${PYTHON_MAJMIN}/sqlite3"
         ],
         "cached": []
-    },
-    "statistics": {
-	"summary": "Basic statistics module",
-	"rdepends": [
-	    "core",
-	    "math",
-	    "numbers"
-	],
-	"files": [
-	    "${libdir}/python${PYTHON_MAJMIN}/statistics.py"
-	],
-	"cached": [
-	    "${libdir}/python${PYTHON_MAJMIN}/__pycache__/statistics.*.pyc"
-	]
     },
     "stringold": {
         "summary": "Python string APIs [deprecated]",
@@ -1248,16 +1232,5 @@
             "${libdir}/python${PYTHON_MAJMIN}/xmlrpc/__pycache__"
         ],
         "cached": []
-    },
-    "zoneinfo": {
-        "summary": "IANA time zone support",
-        "rdepends": [
-            "core"
-        ],
-        "files": [
-            "${libdir}/python${PYTHON_MAJMIN}/zoneinfo",
-            "${libdir}/python${PYTHON_MAJMIN}/lib-dynload/_zoneinfo.*.so"
-        ],
-       "cached": []
     }
 }

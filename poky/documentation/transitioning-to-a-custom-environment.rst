@@ -28,9 +28,9 @@ Transitioning to a custom environment for systems development
    for you to get comfortable with project concepts.
 
 #. **Find and acquire the best BSP for your target**.
-   Use the :yocto_home:`Yocto Project Compatible Layers
+   Use the :yocto_home:`Yocto Project curated layer index
    </software-overview/layers/>` or even the :oe_layerindex:`OpenEmbedded
-   Layer Index <>` to find and acquire the best BSP for your
+   layer index <>` to find and acquire the best BSP for your
    target board. The Yocto Project layer index BSPs are regularly validated. The
    best place to get your first BSP is from your silicon manufacturer or board
    vendor – they can point you to their most qualified efforts. In general, for
@@ -47,7 +47,7 @@ Transitioning to a custom environment for systems development
 #. **Based on the layers you've chosen, make needed changes in your
    configuration**.
    For instance, you've chosen a machine type and added in the corresponding BSP
-   layer. You'll then need to change the value of the :term:`MACHINE` variable in your
+   layer. You'll then need to change the value of the ``MACHINE`` variable in your
    configuration file (build/local.conf) to point to that same machine
    type. There could be other layer-specific settings you need to change as
    well. Each layer has a ``README`` document that you can look at for this type of
@@ -84,7 +84,7 @@ Transitioning to a custom environment for systems development
 
 #. **Now you're ready to create an image recipe**.
    There are a number of ways to do this. However, it is strongly recommended
-   that you have your own image recipe --- don't try appending to existing image
+   that you have your own image recipe - don't try appending to existing image
    recipes. Recipes for images are trivial to create and you usually want to
    fully customize their contents.
 

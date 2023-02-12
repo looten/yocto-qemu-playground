@@ -5,7 +5,7 @@ and manipulate the various components that make up these strings."
 
 HOMEPAGE = "http://search.cpan.org/dist/URI/"
 SECTION = "libs"
-LICENSE = "Artistic-1.0 | GPL-1.0-or-later"
+LICENSE = "Artistic-1.0 | GPL-1.0+"
 
 LIC_FILES_CHKSUM = "file://LICENSE;md5=c453e94fae672800f83bc1bd7a38b53f"
 
@@ -27,14 +27,14 @@ do_compile() {
 	cpan_do_compile
 }
 
-do_install:prepend() {
+do_install_prepend() {
 	# these tests require "-T" (taint) command line option
 	rm -rf ${B}/t/cwd.t
 	rm -rf ${B}/t/file.t
 }
 
-RDEPENDS:${PN} += "perl-module-integer perl-module-mime-base64"
-RDEPENDS:${PN}-ptest += " \
+RDEPENDS_${PN} += "perl-module-integer perl-module-mime-base64"
+RDEPENDS_${PN}-ptest += " \
     libtest-needs-perl \
     perl-module-test-more \
     perl-module-test \

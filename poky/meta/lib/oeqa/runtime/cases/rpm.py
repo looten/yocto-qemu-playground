@@ -1,6 +1,4 @@
 #
-# Copyright OpenEmbedded Contributors
-#
 # SPDX-License-Identifier: MIT
 #
 
@@ -118,12 +116,12 @@ class RpmInstallRemoveTest(OERuntimeTestCase):
         Author:      Alexander Kanavin <alex.kanavin@gmail.com>
         AutomatedBy: Daniel Istrate <daniel.alexandrux.istrate@intel.com>
         """
-        db_files_cmd = 'ls /var/lib/rpm/rpmdb.sqlite*'
+        db_files_cmd = 'ls /var/lib/rpm/__db.*'
         check_log_cmd = "grep RPM /var/log/messages | wc -l"
 
-        # Make sure that some database files are under /var/lib/rpm as 'rpmdb.sqlite'
+        # Make sure that some database files are under /var/lib/rpm as '__db.xxx'
         status, output = self.target.run(db_files_cmd)
-        msg =  'Failed to find database files under /var/lib/rpm/ as rpmdb.sqlite'
+        msg =  'Failed to find database files under /var/lib/rpm/ as __db.xxx'
         self.assertEqual(0, status, msg=msg)
 
         self.tc.target.copyTo(self.test_file, self.dst)

@@ -4,7 +4,7 @@ key-presses."
 HOMEPAGE = "http://matchbox-project.org/"
 BUGTRACKER = "http://bugzilla.yoctoproject.org/"
 
-LICENSE = "LGPL-2.0-or-later"
+LICENSE = "LGPLv2+"
 LIC_FILES_CHKSUM = "file://src/libfakekey.c;endline=30;md5=602b5ccd48f64407510867f3373b448c"
 
 DEPENDS = "libxtst"

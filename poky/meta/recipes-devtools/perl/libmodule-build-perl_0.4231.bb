@@ -10,7 +10,7 @@ SECTION = "libs"
 
 HOMEPAGE = "https://metacpan.org/release/Module-Build"
 
-LICENSE = "Artistic-1.0 | GPL-1.0-or-later"
+LICENSE = "Artistic-1.0 | GPL-1.0+"
 LIC_FILES_CHKSUM = "file://README;beginline=949;endline=954;md5=624c06db56a2af4d70cf9edc29fcae1b"
 
 SRC_URI = "${CPAN_MIRROR}/authors/id/L/LE/LEONT/Module-Build-${PV}.tar.gz \
@@ -35,9 +35,8 @@ do_patch[postfuncs] += "do_patch_module_build"
 
 EXTRA_CPAN_BUILD_FLAGS = "--create_packlist=0"
 
-do_install:append () {
+do_install_append () {
         rm -rf ${D}${docdir}/perl/html
-        sed -i "s:^#!.*:#!/usr/bin/env perl:" ${D}${bindir}/config_data
 }
 
 do_install_ptest() {
@@ -56,7 +55,7 @@ do_install_ptest() {
         rm -rf ${D}${PTEST_PATH}/_build/magicnum
 }
 
-RDEPENDS:${PN} += " \
+RDEPENDS_${PN} += " \
     perl-module-carp \
     perl-module-cpan \
     perl-module-config \
@@ -88,7 +87,7 @@ RDEPENDS:${PN} += " \
     perl-module-utf8 \
 "
 
-RDEPENDS:${PN}-ptest += " \
+RDEPENDS_${PN}-ptest += " \
     packagegroup-core-buildessential \
     perl-dev \
     perl-module-blib \
@@ -105,7 +104,7 @@ RDEPENDS:${PN}-ptest += " \
     perl-module-test-more \
 "
 
-RPROVIDES:${PN} += "\
+RPROVIDES_${PN} += "\
     libmodule-build-base-perl \
     libmodule-build-compat-perl \
     libmodule-build-config-perl \
@@ -119,6 +118,6 @@ RPROVIDES:${PN} += "\
 "
 
 # t/xs.t RDEPENDS on "EXTERN.h" provided by perl-dev
-INSANE_SKIP:${PN}-ptest = "dev-deps"
+INSANE_SKIP_${PN}-ptest = "dev-deps"
 
 BBCLASSEXTEND = "native"

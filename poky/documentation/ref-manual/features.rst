@@ -10,10 +10,10 @@ can select, and a reference on feature backfilling.
 
 Features provide a mechanism for working out which packages should be
 included in the generated images. Distributions can select which
-features they want to support through the :term:`DISTRO_FEATURES` variable,
+features they want to support through the ``DISTRO_FEATURES`` variable,
 which is set or appended to in a distribution's configuration file such
 as ``poky.conf``, ``poky-tiny.conf``, ``poky-lsb.conf`` and so forth.
-Machine features are set in the :term:`MACHINE_FEATURES` variable, which is
+Machine features are set in the ``MACHINE_FEATURES`` variable, which is
 set in the machine configuration file and specifies the hardware
 features for a given machine.
 
@@ -26,7 +26,8 @@ One method you can use to determine which recipes are checking to see if
 a particular feature is contained or not is to ``grep`` through the
 :term:`Metadata` for the feature. Here is an example that
 discovers the recipes whose build is potentially changed based on a
-given feature::
+given feature:
+::
 
    $ cd poky
    $ git grep 'contains.*MACHINE_FEATURES.*feature'
@@ -62,8 +63,6 @@ Project metadata:
 
 -  *keyboard:* Hardware has a keyboard
 
--  *numa:* Hardware has non-uniform memory access
-
 -  *pcbios:* Support for booting through BIOS
 
 -  *pci:* Hardware has a PCI bus
@@ -71,8 +70,6 @@ Project metadata:
 -  *pcmcia:* Hardware has PCMCIA or CompactFlash sockets
 
 -  *phone:* Mobile phone (voice) support
-
--  *qemu-usermode:* QEMU can support user-mode emulation for this machine
 
 -  *qvga:* Machine has a QVGA (320x240) display
 
@@ -104,9 +101,7 @@ packages, and they can go beyond simply controlling the installation of
 a package or packages. In most cases, the presence or absence of a
 feature translates to the appropriate option supplied to the configure
 script during the :ref:`ref-tasks-configure` task for
-the recipes that optionally support the feature. Appropriate options
-must be supplied, and enabling/disabling :term:`PACKAGECONFIG` for the
-concerned packages is one way of supplying such options.
+the recipes that optionally support the feature.
 
 Some distro features are also machine features. These select features
 make sense to be controlled both at the machine and distribution
@@ -114,23 +109,11 @@ configuration level. See the
 :term:`COMBINED_FEATURES` variable for more
 information.
 
-.. note::
-
-   :term:`DISTRO_FEATURES` is normally independent of kernel configuration,
-   so if a feature specified in :term:`DISTRO_FEATURES` also relies on
-   support in the kernel, you will also need to ensure that support is
-   enabled in the kernel configuration.
-
 This list only represents features as shipped with the Yocto Project
-metadata, as extra layers can define their own:
+metadata:
 
--  *3g:* Include support for cellular data.
-
--  *acl:* Include
-   `Access Control List <https://en.wikipedia.org/wiki/Access-control_list>`__ support.
-
--  *alsa:* Include `Advanced Linux Sound Architecture <https://en.wikipedia.org/wiki/Advanced_Linux_Sound_Architecture>`__
-   support (OSS compatibility kernel modules installed if available).
+-  *alsa:* Include ALSA support (OSS compatibility kernel modules
+   installed if available).
 
 -  *api-documentation:* Enables generation of API documentation during
    recipe builds. The resulting documentation is added to SDK tarballs
@@ -143,61 +126,31 @@ metadata, as extra layers can define their own:
 
 -  *cramfs:* Include CramFS support.
 
--  *debuginfod:* Include support for getting ELF debugging information through
-   a :ref:`debuginfod <dev-manual/common-tasks:using the debuginfod server method>`
-   server.
-
 -  *directfb:* Include DirectFB support.
 
 -  *ext2:* Include tools for supporting for devices with internal
    HDD/Microdrive for storing files (instead of Flash only devices).
 
--  *gobject-introspection-data:* Include data to support
-   `GObject Introspection <https://gi.readthedocs.io/en/latest/>`__.
-
 -  *ipsec:* Include IPSec support.
-
--  *ipv4:* Include IPv4 support.
 
 -  *ipv6:* Include IPv6 support.
 
 -  *keyboard:* Include keyboard support (e.g. keymaps will be loaded
    during boot).
 
--  *multiarch:* Enable building applications with multiple architecture
-   support.
-
--  *ld-is-gold:* Use the `gold <https://en.wikipedia.org/wiki/Gold_(linker)>`__
-   linker instead of the standard GCC linker (bfd).
-
 -  *ldconfig:* Include support for ldconfig and ``ld.so.conf`` on the
    target.
 
--  *lto:* Enable `Link-Time Optimisation <https://gcc.gnu.org/wiki/LinkTimeOptimization>`__.
-
--  *nfc:* Include support for
-   `Near Field Communication <https://en.wikipedia.org/wiki/Near-field_communication>`__.
-
 -  *nfs:* Include NFS client support (for mounting NFS exports on
    device).
-
--  *nls:* Include National Language Support (NLS).
 
 -  *opengl:* Include the Open Graphics Library, which is a
    cross-language, multi-platform application programming interface used
    for rendering two and three-dimensional graphics.
 
--  *overlayfs:* Include `OverlayFS <https://docs.kernel.org/filesystems/overlayfs.html>`__
-   support.
-
--  *pam:* Include `Pluggable Authentication Module (PAM) <https://en.wikipedia.org/wiki/Pluggable_authentication_module>`__
-   support.
-
 -  *pci:* Include PCI bus support.
 
 -  *pcmcia:* Include PCMCIA/CompactFlash support.
-
--  *polkit:* Include `Polkit <https://en.wikipedia.org/wiki/Polkit>`__ support.
 
 -  *ppp:* Include PPP dialup support.
 
@@ -205,18 +158,6 @@ metadata, as extra layers can define their own:
    individual recipes. For more information on package tests, see the
    ":ref:`dev-manual/common-tasks:testing packages with ptest`" section
    in the Yocto Project Development Tasks Manual.
-
--  *pulseaudio:* Include support for
-   `PulseAudio <https://www.freedesktop.org/wiki/Software/PulseAudio/>`__.
-
--  *selinux:* Include support for
-   `Security-Enhanced Linux (SELinux) <https://en.wikipedia.org/wiki/Security-Enhanced_Linux>`__
-   (requires `meta-selinux <https://layers.openembedded.org/layerindex/layer/meta-selinux/>`__).
-
--  *seccomp:* Enables building applications with
-   `seccomp <https://en.wikipedia.org/wiki/Seccomp>`__ support, to
-   allow them to strictly restrict the system calls that they are allowed
-   to invoke.
 
 -  *smbfs:* Include SMB networks client support (for mounting
    Samba/Microsoft Windows shares on device).
@@ -236,24 +177,12 @@ metadata, as extra layers can define their own:
    directories into their respective counterparts in the ``/usr``
    directory to provide better package and application compatibility.
 
--  *vfat:* Include `FAT filesystem <https://en.wikipedia.org/wiki/File_Allocation_Table>`__
-   support.
-
--  *vulkan:* Include support for the
-   `Vulkan API <https://en.wikipedia.org/wiki/Vulkan>`__.
-
 -  *wayland:* Include the Wayland display server protocol and the
    library that supports it.
 
 -  *wifi:* Include WiFi support (integrated only).
 
 -  *x11:* Include the X server and libraries.
-
--  *xattr:* Include support for
-   `extended file attributes <https://en.wikipedia.org/wiki/Extended_file_attributes>`__.
-
--  *zeroconf:* Include support for
-   `zero configuration networking <https://en.wikipedia.org/wiki/Zero-configuration_networking>`__.
 
 .. _ref-features-image:
 
@@ -268,21 +197,19 @@ you can add several different predefined packages such as development
 utilities or packages with debug information needed to investigate
 application problems or profile applications.
 
-Here are the image features available for all images:
+The following image features are available for all images:
 
--  *allow-empty-password:* Allows Dropbear and OpenSSH to accept
-   logins from accounts having an empty password string.
-
--  *allow-root-login:* Allows Dropbear and OpenSSH to accept root logins.
+-  *allow-empty-password:* Allows Dropbear and OpenSSH to accept root
+   logins and logins from accounts having an empty password string.
 
 -  *dbg-pkgs:* Installs debug symbol packages for all packages installed
    in a given image.
 
 -  *debug-tweaks:* Makes an image suitable for development (e.g. allows
-   root logins, logins without passwords ---including root ones, and enables
-   post-installation logging). See the ``allow-empty-password``,
-   ``allow-root-login``, ``empty-root-password``, and ``post-install-logging``
-   features in this list for additional information.
+   root logins without passwords and enables post-installation logging).
+   See the 'allow-empty-password', 'empty-root-password', and
+   'post-install-logging' features in this list for additional
+   information.
 
 -  *dev-pkgs:* Installs development packages (headers and extra library
    links) for all packages installed in a given image.
@@ -290,26 +217,8 @@ Here are the image features available for all images:
 -  *doc-pkgs:* Installs documentation packages for all packages
    installed in a given image.
 
--  *empty-root-password:* This feature or ``debug-tweaks`` is required if
-   you want to allow root login with an empty password. If these features
-   are not present in :term:`IMAGE_FEATURES`, a non-empty password is
-   forced in ``/etc/passwd`` and ``/etc/shadow`` if such files exist.
-
-   .. note::
-       ``empty-root-passwd`` doesn't set an empty root password by itself.
-       You get an initial empty root password thanks to the
-       :oe_git:`base-passwd </openembedded-core/tree/meta/recipes-core/base-passwd/>`
-       and :oe_git:`shadow </openembedded-core/tree/meta/recipes-extended/shadow/>`
-       recipes, and the presence of ``empty-root-passwd`` or ``debug-tweaks``
-       just disables the mechanism which forces an non-empty password for the
-       root user.
-
--  *lic-pkgs:* Installs license packages for all packages installed in a
-   given image.
-
--  *overlayfs-etc:* Configures the ``/etc`` directory to be in ``overlayfs``.
-   This allows to store device specific information elsewhere, especially
-   if the root filesystem is configured to be read-only.
+-  *empty-root-password:* Sets the root password to an empty string,
+   which allows logins with a blank password.
 
 -  *package-management:* Installs package management tools and preserves
    the package manager database.
@@ -331,29 +240,12 @@ Here are the image features available for all images:
    section in the Yocto Project Development Tasks Manual for more
    information.
 
--  *read-only-rootfs-delayed-postinsts:* when specified in conjunction
-   with ``read-only-rootfs``, specifies that post-install scripts are
-   still permitted (this assumes that the root filesystem will be made
-   writeable for the first boot; this feature does not do anything to
-   ensure that - it just disables the check for post-install scripts.)
-
--  *serial-autologin-root:* when specified in conjunction with
-   ``empty-root-password`` will automatically login as root on the
-   serial console. This of course opens up a security hole if the
-   serial console is potentially accessible to an attacker, so use
-   with caution.
-
 -  *splash:* Enables showing a splash screen during boot. By default,
    this screen is provided by ``psplash``, which does allow
    customization. If you prefer to use an alternative splash screen
    package, you can do so by setting the ``SPLASH`` variable to a
    different package name (or names) within the image recipe or at the
    distro configuration level.
-
--  *stateless-rootfs:*: specifies that the image should be created as
-   stateless - when using ``systemd``, ``systemctl-native`` will not
-   be run on the image, leaving the image for population at runtime by
-   systemd.
 
 -  *staticdev-pkgs:* Installs static development packages, which are
    static libraries (i.e. ``*.a`` files), for all packages installed in
@@ -373,25 +265,10 @@ these valid features is as follows:
 
 -  *ssh-server-dropbear:* Installs the Dropbear minimal SSH server.
 
-   .. note::
-
-      As of the 4.1 release, the ``ssh-server-dropbear`` feature also
-      recommends the ``openssh-sftp-server`` package, which by default
-      will be pulled into the image. This is because recent versions of
-      the OpenSSH ``scp`` client now use the SFTP protocol, and thus
-      require an SFTP server to be present to connect to. However, if
-      you wish to use the Dropbear ssh server `without` the SFTP server
-      installed, you can either remove ``ssh-server-dropbear`` from
-      ``IMAGE_FEATURES`` and add ``dropbear`` to :term:`IMAGE_INSTALL`
-      instead, or alternatively still use the feature but set
-      :term:`BAD_RECOMMENDATIONS` as follows::
-
-         BAD_RECOMMENDATIONS += "openssh-sftp-server"
-
 -  *ssh-server-openssh:* Installs the OpenSSH SSH server, which is more
    full-featured than Dropbear. Note that if both the OpenSSH SSH server
    and the Dropbear minimal SSH server are present in
-   :term:`IMAGE_FEATURES`, then OpenSSH will take precedence and Dropbear
+   ``IMAGE_FEATURES``, then OpenSSH will take precedence and Dropbear
    will not be installed.
 
 -  *tools-debug:* Installs debugging tools such as ``strace`` and
@@ -404,8 +281,6 @@ these valid features is as follows:
 
 -  *tools-testapps:* Installs device testing tools (e.g. touchscreen
    debugging).
-
--  *weston:* Installs Weston (reference Wayland environment).
 
 -  *x11:* Installs the X server.
 
@@ -449,27 +324,27 @@ Here are two examples to help illustrate feature backfilling:
 -  *The "pulseaudio" distro feature option*: Previously, PulseAudio
    support was enabled within the Qt and GStreamer frameworks. Because
    of this, the feature is backfilled and thus enabled for all distros
-   through the :term:`DISTRO_FEATURES_BACKFILL` variable in the
+   through the ``DISTRO_FEATURES_BACKFILL`` variable in the
    ``meta/conf/bitbake.conf`` file. However, your distro needs to
    disable the feature. You can disable the feature without affecting
    other existing distro configurations that need PulseAudio support by
-   adding "pulseaudio" to :term:`DISTRO_FEATURES_BACKFILL_CONSIDERED` in
+   adding "pulseaudio" to ``DISTRO_FEATURES_BACKFILL_CONSIDERED`` in
    your distro's ``.conf`` file. Adding the feature to this variable
-   when it also exists in the :term:`DISTRO_FEATURES_BACKFILL` variable
+   when it also exists in the ``DISTRO_FEATURES_BACKFILL`` variable
    prevents the build system from adding the feature to your
-   configuration's :term:`DISTRO_FEATURES`, effectively disabling the
+   configuration's ``DISTRO_FEATURES``, effectively disabling the
    feature for that particular distro.
 
 -  *The "rtc" machine feature option*: Previously, real time clock (RTC)
    support was enabled for all target devices. Because of this, the
    feature is backfilled and thus enabled for all machines through the
-   :term:`MACHINE_FEATURES_BACKFILL` variable in the
+   ``MACHINE_FEATURES_BACKFILL`` variable in the
    ``meta/conf/bitbake.conf`` file. However, your target device does not
    have this capability. You can disable RTC support for your device
    without affecting other machines that need RTC support by adding the
-   feature to your machine's :term:`MACHINE_FEATURES_BACKFILL_CONSIDERED`
+   feature to your machine's ``MACHINE_FEATURES_BACKFILL_CONSIDERED``
    list in the machine's ``.conf`` file. Adding the feature to this
-   variable when it also exists in the :term:`MACHINE_FEATURES_BACKFILL`
+   variable when it also exists in the ``MACHINE_FEATURES_BACKFILL``
    variable prevents the build system from adding the feature to your
-   configuration's :term:`MACHINE_FEATURES`, effectively disabling RTC
+   configuration's ``MACHINE_FEATURES``, effectively disabling RTC
    support for that particular machine.

@@ -1,6 +1,4 @@
 #
-# Copyright OpenEmbedded Contributors
-#
 # SPDX-License-Identifier: MIT
 #
 
@@ -26,8 +24,8 @@ class Fetch(OESelftestTestCase):
         # No mirrors, should use git to fetch successfully
         features = """
 DL_DIR = "%s"
-MIRRORS:forcevariable = ""
-PREMIRRORS:forcevariable = ""
+MIRRORS_forcevariable = ""
+PREMIRRORS_forcevariable = ""
 """ % dldir
         self.write_config(features)
         oe.path.remove(dldir, recurse=True)
@@ -37,8 +35,8 @@ PREMIRRORS:forcevariable = ""
         features = """
 DL_DIR = "%s"
 GIT_PROXY_COMMAND = "false"
-MIRRORS:forcevariable = ""
-PREMIRRORS:forcevariable = ""
+MIRRORS_forcevariable = ""
+PREMIRRORS_forcevariable = ""
 """ % dldir
         self.write_config(features)
         oe.path.remove(dldir, recurse=True)
@@ -49,7 +47,7 @@ PREMIRRORS:forcevariable = ""
         features = """
 DL_DIR = "%s"
 GIT_PROXY_COMMAND = "false"
-MIRRORS:forcevariable = "git://.*/.* http://downloads.yoctoproject.org/mirror/sources/"
+MIRRORS_forcevariable = "git://.*/.* http://downloads.yoctoproject.org/mirror/sources/"
 """ % dldir
         self.write_config(features)
         oe.path.remove(dldir, recurse=True)

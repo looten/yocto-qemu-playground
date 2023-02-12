@@ -4,8 +4,9 @@
 # Copyright (C) 2013 Intel Corporation
 # Author: Andreea Brandusa Proca <andreea.b.proca@intel.com>
 #
-# SPDX-License-Identifier: MIT
-#
+# Licensed under the MIT license, see COPYING.MIT for details
+
+inherit base
 
 ERR_REPORT_DIR ?= "${LOG_DIR}/error-report"
 
@@ -64,7 +65,7 @@ python errorreport_handler () {
             data['target_sys'] = e.data.getVar("TARGET_SYS")
             data['failures'] = []
             data['component'] = " ".join(e.getPkgs())
-            data['branch_commit'] = str(oe.buildcfg.detect_branch(e.data)) + ": " + str(oe.buildcfg.detect_revision(e.data))
+            data['branch_commit'] = str(base_detect_branch(e.data)) + ": " + str(base_detect_revision(e.data))
             data['bitbake_version'] = e.data.getVar("BB_VERSION")
             data['layer_version'] = get_layers_branch_rev(e.data)
             data['local_conf'] = get_conf_data(e, 'local.conf')

@@ -14,7 +14,7 @@ REQUIRED_DISTRO_FEATURES = "x11"
 
 PACKAGES = "${PN} ${PN}-base ${PN}-apps ${PN}-games"
 
-RDEPENDS:${PN} = "\
+RDEPENDS_${PN} = "\
     ${PN}-base \
     ${PN}-apps \
     ${PN}-games \
@@ -22,8 +22,8 @@ RDEPENDS:${PN} = "\
 
 NETWORK_MANAGER ?= "connman-gnome"
 
-SUMMARY:${PN}-base = "Sato desktop - base packages"
-RDEPENDS:${PN}-base = "\
+SUMMARY_${PN}-base = "Sato desktop - base packages"
+RDEPENDS_${PN}-base = "\
     matchbox-desktop \
     matchbox-session-sato \
     matchbox-keyboard \
@@ -31,7 +31,7 @@ RDEPENDS:${PN}-base = "\
     matchbox-keyboard-im \
     matchbox-config-gtk \
     xcursor-transparent-theme \
-    sato-icon-theme \
+    adwaita-icon-theme \
     settings-daemon \
     shutdown-desktop \
     ${NETWORK_MANAGER} \
@@ -45,10 +45,10 @@ WEB ?= ""
 #WEB = "epiphany"
 
 GSTEXAMPLES ?= "gst-examples"
-GSTEXAMPLES:riscv64 = ""
+GSTEXAMPLES_riscv64 = ""
 
-SUMMARY:${PN}-apps = "Sato desktop - applications"
-RDEPENDS:${PN}-apps = "\
+SUMMARY_${PN}-apps = "Sato desktop - applications"
+RDEPENDS_${PN}-apps = "\
     l3afpad \
     matchbox-terminal \
     sato-screenshot \
@@ -57,7 +57,7 @@ RDEPENDS:${PN}-apps = "\
     ${WEB} \
     "
 
-SUMMARY:${PN}-games = "Sato desktop - games"
-RDEPENDS:${PN}-games = "\
+SUMMARY_${PN}-games = "Sato desktop - games"
+RDEPENDS_${PN}-games = "\
     puzzles \
     "

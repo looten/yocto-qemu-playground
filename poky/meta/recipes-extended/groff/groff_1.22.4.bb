@@ -3,7 +3,7 @@ DESCRIPTION = "The groff (GNU troff) software is a typesetting package which rea
 formatting commands and produces formatted output."
 SECTION = "base"
 HOMEPAGE = "http://www.gnu.org/software/groff/"
-LICENSE = "GPL-3.0-only"
+LICENSE = "GPLv3"
 
 LIC_FILES_CHKSUM = "file://COPYING;md5=d32239bcb673463ab874e80d47fae504"
 
@@ -22,7 +22,7 @@ SRC_URI[sha256sum] = "e78e7b4cb7dec310849004fa88847c44701e8d133b5d4c13057d876c1b
 PR = "r1"
 
 DEPENDS = "bison-native"
-RDEPENDS:${PN} += "perl sed"
+RDEPENDS_${PN} += "perl sed"
 
 inherit autotools-brokensep texinfo multilib_script pkgconfig
 
@@ -35,12 +35,12 @@ CACHED_CONFIGUREVARS += "ac_cv_path_PERL='/usr/bin/env perl' ac_cv_path_BASH_PRO
 
 # Delete these generated files since we depend on bison-native
 # and regenerate them. Do it deterministically (always).
-do_configure:prepend() {
+do_configure_prepend() {
 	rm -f ${S}/src/preproc/eqn/eqn.cpp
 	rm -f ${S}/src/preproc/eqn/eqn.hpp
 }
 
-do_install:append() {
+do_install_append() {
 	# Some distros have both /bin/perl and /usr/bin/perl, but we set perl location
 	# for target as /usr/bin/perl, so fix it to /usr/bin/perl.
 	for i in afmtodit mmroff gropdf pdfmom grog; do
@@ -68,13 +68,13 @@ do_install:append() {
 	rm -rf ${D}${mandir}/man1/grap2graph*
 }
 
-do_install:append:class-native() {
+do_install_append_class-native() {
 	create_cmdline_wrapper ${D}/${bindir}/groff \
 		-F${STAGING_DIR_NATIVE}${datadir_native}/groff/${PV}/font \
 		-M${STAGING_DIR_NATIVE}${datadir_native}/groff/${PV}/tmac
 }
 
-FILES:${PN} += "${libdir}/${BPN}/site-tmac \
+FILES_${PN} += "${libdir}/${BPN}/site-tmac \
                 ${libdir}/${BPN}/groffer/"
 
 BBCLASSEXTEND = "native"

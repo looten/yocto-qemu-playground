@@ -8,6 +8,6 @@ PACKAGE_ARCH = "${MACHINE_ARCH}"
 PR = "r19"
 
 inherit systemd
-SYSTEMD_SERVICE:${PN} = ""
+SYSTEMD_SERVICE_${PN} = ""
 
-ALLOW_EMPTY:${PN} = "1"
+ALLOW_EMPTY_${PN} = "1"

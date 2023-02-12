@@ -14,5 +14,6 @@ Yocto Project Development Tasks Manual
    start
    common-tasks
    qemu
+   history
 
 .. include:: /boilerplate.rst

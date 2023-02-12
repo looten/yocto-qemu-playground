@@ -25,11 +25,18 @@ build a reference embedded OS called Poky.
       in the Yocto Project Development Tasks Manual for more
       information.
 
-   -  You may use version 2 of Windows Subsystem For Linux (WSL 2) to set
-      up a build host using Windows 10 or later, Windows Server 2019 or later.
-      See the :ref:`dev-manual/start:setting up to use windows subsystem for
-      linux (wsl 2)` section in the Yocto Project Development Tasks Manual
-      for more information.
+   -  You may use Windows Subsystem For Linux v2 to set up a build host
+      using Windows 10.
+
+      .. note::
+
+         The Yocto Project is not compatible with WSLv1, it is
+         compatible but not officially supported nor validated with
+         WSLv2, if you still decide to use WSL please upgrade to WSLv2.
+
+      See the :ref:`dev-manual/start:setting up to use windows
+      subsystem for linux (wslv2)` section in the Yocto Project Development
+      Tasks Manual for more information.
 
 If you want more conceptual or background information on the Yocto
 Project, see the :doc:`/overview-manual/index`.
@@ -57,12 +64,11 @@ following requirements:
    -  tar &MIN_TAR_VERSION; or greater
    -  Python &MIN_PYTHON_VERSION; or greater.
    -  gcc &MIN_GCC_VERSION; or greater.
-   -  GNU make &MIN_MAKE_VERSION; or greater
 
 If your build host does not meet any of these three listed version
 requirements, you can take steps to prepare the system so that you
 can still use the Yocto Project. See the
-:ref:`ref-manual/system-requirements:required git, tar, python, make and gcc versions`
+:ref:`ref-manual/system-requirements:required git, tar, python and gcc versions`
 section in the Yocto Project Reference Manual for information.
 
 Build Host Packages
@@ -74,7 +80,7 @@ distribution:
 
 .. code-block:: shell
 
-  $ sudo apt install &UBUNTU_HOST_PACKAGES_ESSENTIAL;
+  $ sudo apt-get install &UBUNTU_HOST_PACKAGES_ESSENTIAL;
 
 .. note::
 
@@ -201,7 +207,7 @@ an entire Linux distribution, including the toolchain, from source.
           https://docs.yoctoproject.org
 
       For more information about OpenEmbedded see their website:
-          https://www.openembedded.org/
+          http://www.openembedded.org/
 
       ### Shell environment set up for builds. ###
 
@@ -209,18 +215,11 @@ an entire Linux distribution, including the toolchain, from source.
 
       Common targets are:
           core-image-minimal
-          core-image-full-cmdline
           core-image-sato
-          core-image-weston
           meta-toolchain
           meta-ide-support
 
       You can also run generated QEMU images with a command like 'runqemu qemux86-64'
-
-      Other commonly useful commands are:
-       - 'devtool' and 'recipetool' handle common recipe tasks
-       - 'bitbake-layers' handles common layer tasks
-       - 'oe-pkgdata-util' handles common target package tasks
 
    Among other things, the script creates the :term:`Build Directory`, which is
    ``build`` in this case and is located in the :term:`Source Directory`.  After
@@ -238,19 +237,19 @@ an entire Linux distribution, including the toolchain, from source.
    .. tip::
 
       You can significantly speed up your build and guard against fetcher
-      failures by using :ref:`overview-manual/concepts:shared state cache`
-      mirrors and enabling :ref:`overview-manual/concepts:hash equivalence`.
-      This way, you can use pre-built artifacts rather than building them.
-      This is relevant only when your network and the server that you use
-      can download these artifacts faster than you would be able to build them.
+      failures by using mirrors. To use mirrors, add these lines to your
+      local.conf file in the Build directory: ::
 
-      To use such mirrors, uncomment the below lines in your ``conf/local.conf``
-      file in the :term:`Build Directory`::
+         SSTATE_MIRRORS = "\
+         file://.* http://sstate.yoctoproject.org/dev/PATH;downloadfilename=PATH \n \
+         file://.* http://sstate.yoctoproject.org/&YOCTO_DOC_VERSION_MINUS_ONE;/PATH;downloadfilename=PATH \n \
+         file://.* http://sstate.yoctoproject.org/&YOCTO_DOC_VERSION;/PATH;downloadfilename=PATH \n \
+         "
 
-         BB_SIGNATURE_HANDLER = "OEEquivHash"
-         BB_HASHSERVE = "auto"
-         BB_HASHSERVE_UPSTREAM = "hashserv.yocto.io:8687"
-         SSTATE_MIRRORS ?= "file://.* https://sstate.yoctoproject.org/all/PATH;downloadfilename=PATH"
+
+      The previous examples showed how to add sstate paths for Yocto Project
+      &YOCTO_DOC_VERSION_MINUS_ONE;, &YOCTO_DOC_VERSION;, and a development
+      area. For a complete index of sstate locations, see http://sstate.yoctoproject.org/.
 
 #. **Start the Build:** Continue with the following command to build an OS
    image for the target, which is ``core-image-sato`` in this example:
@@ -261,9 +260,8 @@ an entire Linux distribution, including the toolchain, from source.
 
    For information on using the ``bitbake`` command, see the
    :ref:`overview-manual/concepts:bitbake` section in the Yocto Project Overview and
-   Concepts Manual, or see
-   :ref:`bitbake:bitbake-user-manual/bitbake-user-manual-intro:the bitbake command`
-   in the BitBake User Manual.
+   Concepts Manual, or see the ":ref:`BitBake Command
+   <bitbake:bitbake-user-manual/bitbake-user-manual-intro:the bitbake command>`" section in the BitBake User Manual.
 
 #. **Simulate Your Image Using QEMU:** Once this particular image is
    built, you can start QEMU, which is a Quick EMUlator that ships with
@@ -299,7 +297,7 @@ modular development and makes it easier to reuse the layer metadata.
 
 Follow these steps to add a hardware layer:
 
-#. **Find a Layer:** Many hardware layers are available. The Yocto Project
+#. **Find a Layer:** Lots of hardware layers exist. The Yocto Project
    :yocto_git:`Source Repositories <>` has many hardware layers.
    This example adds the
    `meta-altera <https://github.com/kraj/meta-altera>`__ hardware layer.
@@ -320,8 +318,8 @@ Follow these steps to add a hardware layer:
       Resolving deltas: 100% (13385/13385), done.
       Checking connectivity... done.
 
-   The hardware layer is now available
-   next to other layers inside the Poky reference repository on your build
+   The hardware layer now exists
+   with other layers inside the Poky reference repository on your build
    host as ``meta-altera`` and contains all the metadata needed to
    support hardware from Altera, which is owned by Intel.
 
@@ -334,7 +332,7 @@ Follow these steps to add a hardware layer:
 #. **Change the Configuration to Build for a Specific Machine:** The
    :term:`MACHINE` variable in the
    ``local.conf`` file specifies the machine for the build. For this
-   example, set the :term:`MACHINE` variable to ``cyclone5``. These
+   example, set the ``MACHINE`` variable to ``cyclone5``. These
    configurations are used:
    https://github.com/kraj/meta-altera/blob/master/conf/machine/cyclone5.conf.
 
@@ -413,12 +411,12 @@ information including the website, wiki pages, and user manuals:
    development documentation, and access to a rich Yocto Project
    Development Community into which you can tap.
 
--  **Video Seminar:** The `Introduction to the Yocto Project and BitBake, Part 1
-   <https://youtu.be/yuE7my3KOpo>`__ and
-   `Introduction to the Yocto Project and BitBake, Part 2
-   <https://youtu.be/iZ05TTyzGHk>`__ videos offer a video seminar
-   introducing you to the most important aspects of developing a
-   custom embedded Linux distribution with the Yocto Project.
+-  **Developer Screencast:** The `Getting Started with the Yocto Project -
+   New Developer Screencast Tutorial <https://vimeo.com/36450321>`__
+   provides a 30-minute video created for users unfamiliar with the
+   Yocto Project but familiar with Linux build hosts. While this
+   screencast is somewhat dated, the introductory and fundamental
+   concepts are useful for the beginner.
 
 -  **Yocto Project Overview and Concepts Manual:** The
    :doc:`/overview-manual/index` is a great
@@ -433,8 +431,8 @@ information including the website, wiki pages, and user manuals:
    information.
 
 -  **Yocto Project Mailing Lists:** Related mailing lists provide a forum
-   for discussion, patch submission and announcements. There are several
-   mailing lists grouped by topic. See the
+   for discussion, patch submission and announcements. Several mailing
+   lists exist and are grouped according to areas of concern. See the
    :ref:`ref-manual/resources:mailing lists`
    section in the Yocto Project Reference Manual for a complete list of
    Yocto Project mailing lists.

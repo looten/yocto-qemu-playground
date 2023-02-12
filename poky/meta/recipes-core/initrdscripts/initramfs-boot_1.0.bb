@@ -18,4 +18,4 @@ do_install() {
 
 inherit allarch
 
-FILES:${PN} += "/init /dev/console"
+FILES_${PN} += "/init /dev/console"

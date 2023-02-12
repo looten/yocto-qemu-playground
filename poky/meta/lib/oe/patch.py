@@ -1,6 +1,4 @@
 #
-# Copyright OpenEmbedded Contributors
-#
 # SPDX-License-Identifier: GPL-2.0-only
 #
 
@@ -301,10 +299,10 @@ class GitApplyTree(PatchTree):
         PatchTree.__init__(self, dir, d)
         self.commituser = d.getVar('PATCH_GIT_USER_NAME')
         self.commitemail = d.getVar('PATCH_GIT_USER_EMAIL')
-        if not self._isInitialized(d):
+        if not self._isInitialized():
             self._initRepo()
 
-    def _isInitialized(self, d):
+    def _isInitialized(self):
         cmd = "git rev-parse --show-toplevel"
         try:
             output = runcmd(cmd.split(), self.dir).strip()
@@ -312,8 +310,8 @@ class GitApplyTree(PatchTree):
             ## runcmd returned non-zero which most likely means 128
             ## Not a git directory
             return False
-        ## Make sure repo is in builddir to not break top-level git repos, or under workdir
-        return os.path.samefile(output, self.dir) or oe.path.is_path_parent(d.getVar('WORKDIR'), output)
+        ## Make sure repo is in builddir to not break top-level git repos
+        return os.path.samefile(output, self.dir)
 
     def _initRepo(self):
         runcmd("git init".split(), self.dir)
@@ -600,8 +598,6 @@ class QuiltTree(PatchSet):
 
     def Clean(self):
         try:
-            # make sure that patches/series file exists before quilt pop to keep quilt-0.67 happy
-            open(os.path.join(self.dir, "patches","series"), 'a').close()
             self._runcmd(["pop", "-a", "-f"])
             oe.path.remove(os.path.join(self.dir, "patches","series"))
         except Exception:

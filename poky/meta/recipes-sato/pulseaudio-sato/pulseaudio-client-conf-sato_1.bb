@@ -13,5 +13,9 @@ do_install() {
 	install -m 0644 ${S}/50-sato.conf ${D}${sysconfdir}/pulse/client.conf.d/50-sato.conf
 }
 
-FILES:${PN} = "${sysconfdir}/pulse/client.conf.d/50-sato.conf"
-CONFFILES:${PN} = "${sysconfdir}/pulse/client.conf.d/50-sato.conf"
+FILES_${PN} = "${sysconfdir}/pulse/client.conf.d/50-sato.conf"
+CONFFILES_${PN} = "${sysconfdir}/pulse/client.conf.d/50-sato.conf"
+
+# remove at next version upgrade or when output changes
+PR = "r1"
+HASHEQUIV_HASH_VERSION .= ".1"

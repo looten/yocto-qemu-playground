@@ -1,6 +1,4 @@
 #
-# Copyright OpenEmbedded Contributors
-#
 # SPDX-License-Identifier: MIT
 #
 
@@ -65,15 +63,15 @@ class BitbakeTests(OESelftestTestCase):
 
     def test_warnings_errors(self):
         result = bitbake('-b asdf', ignore_status=True)
-        find_warnings = re.search("Summary: There w.{2,3}? [1-9][0-9]* WARNING messages*", result.output)
-        find_errors = re.search("Summary: There w.{2,3}? [1-9][0-9]* ERROR messages*", result.output)
+        find_warnings = re.search("Summary: There w.{2,3}? [1-9][0-9]* WARNING messages* shown", result.output)
+        find_errors = re.search("Summary: There w.{2,3}? [1-9][0-9]* ERROR messages* shown", result.output)
         self.assertTrue(find_warnings, msg="Did not find the mumber of warnings at the end of the build:\n" + result.output)
         self.assertTrue(find_errors, msg="Did not find the mumber of errors at the end of the build:\n" + result.output)
 
     def test_invalid_patch(self):
         # This patch should fail to apply.
-        self.write_recipeinc('man-db', 'FILESEXTRAPATHS:prepend := "${THISDIR}/files:"\nSRC_URI += "file://0001-Test-patch-here.patch"')
-        self.write_config("INHERIT:remove = \"report-error\"")
+        self.write_recipeinc('man-db', 'FILESEXTRAPATHS_prepend := "${THISDIR}/files:"\nSRC_URI += "file://0001-Test-patch-here.patch"')
+        self.write_config("INHERIT_remove = \"report-error\"")
         result = bitbake('man-db -c patch', ignore_status=True)
         self.delete_recipeinc('man-db')
         bitbake('-cclean man-db')
@@ -143,14 +141,19 @@ class BitbakeTests(OESelftestTestCase):
         self.write_recipeinc('man-db', data)
         self.write_config("""DL_DIR = \"${TOPDIR}/download-selftest\"
 SSTATE_DIR = \"${TOPDIR}/download-selftest\"
-INHERIT:remove = \"report-error\"
+INHERIT_remove = \"report-error\"
 """)
         self.track_for_cleanup(os.path.join(self.builddir, "download-selftest"))
 
+        bitbake('-ccleanall man-db')
         result = bitbake('-c fetch man-db', ignore_status=True)
+        bitbake('-ccleanall man-db')
         self.delete_recipeinc('man-db')
         self.assertEqual(result.status, 1, msg="Command succeded when it should have failed. bitbake output: %s" % result.output)
-        self.assertIn('Unable to get checksum for man-db SRC_URI entry invalid: file could not be found', result.output)
+        self.assertIn('Fetcher failure: Unable to find file file://invalid anywhere. The paths that were searched were:', result.output)
+        line = self.getline(result, 'Fetcher failure for URL: \'file://invalid\'. Unable to fetch URL from any source.')
+        self.assertTrue(line and line.startswith("ERROR:"), msg = "\"invalid\" file \
+doesn't exist, yet fetcher didn't report any error. bitbake output: %s" % result.output)
 
     def test_rename_downloaded_file(self):
         # TODO unique dldir instead of using cleanall
@@ -212,7 +215,7 @@ SSTATE_DIR = \"${TOPDIR}/download-selftest\"
     def test_continue(self):
         self.write_config("""DL_DIR = \"${TOPDIR}/download-selftest\"
 SSTATE_DIR = \"${TOPDIR}/download-selftest\"
-INHERIT:remove = \"report-error\"
+INHERIT_remove = \"report-error\"
 """)
         self.track_for_cleanup(os.path.join(self.builddir, "download-selftest"))
         self.write_recipeinc('man-db',"\ndo_fail_task () {\nexit 1 \n}\n\naddtask do_fail_task before do_fetch\n" )
@@ -224,12 +227,12 @@ INHERIT:remove = \"report-error\"
         self.assertLess(errorpos,continuepos, msg = "bitbake didn't pass do_fail_task. bitbake output: %s" % result.output)
 
     def test_non_gplv3(self):
-        self.write_config('INCOMPATIBLE_LICENSE = "GPL-3.0-or-later"')
+        self.write_config('INCOMPATIBLE_LICENSE = "GPLv3"')
         result = bitbake('selftest-ed', ignore_status=True)
         self.assertEqual(result.status, 0, "Bitbake failed, exit code %s, output %s" % (result.status, result.output))
         lic_dir = get_bb_var('LICENSE_DIRECTORY')
-        self.assertFalse(os.path.isfile(os.path.join(lic_dir, 'selftest-ed/generic_GPL-3.0-or-later')))
-        self.assertTrue(os.path.isfile(os.path.join(lic_dir, 'selftest-ed/generic_GPL-2.0-or-later')))
+        self.assertFalse(os.path.isfile(os.path.join(lic_dir, 'selftest-ed/generic_GPLv3')))
+        self.assertTrue(os.path.isfile(os.path.join(lic_dir, 'selftest-ed/generic_GPLv2')))
 
     def test_setscene_only(self):
         """ Bitbake option to restore from sstate only within a build (i.e. execute no real tasks, only setscene)"""
@@ -326,28 +329,3 @@ INHERIT:remove = \"report-error\"
         self.assertFalse("bitbake_patching_started" in result.output, msg = "Repository has been reinitialized. {}".format(srcdir))
         self.delete_recipeinc(test_recipe)
         bitbake('-cclean {}'.format(test_recipe))
-
-
-    def test_git_unpack_nonetwork(self):
-        """
-        Test that a recipe with a floating tag that needs to be resolved upstream doesn't
-        access the network in a patch task run in a separate builld invocation
-        """
-
-        # Enable the recipe to float using a distro override
-        self.write_config("DISTROOVERRIDES .= \":gitunpack-enable-recipe\"")
-
-        bitbake('gitunpackoffline -c fetch')
-        bitbake('gitunpackoffline -c patch')
-
-    def test_git_unpack_nonetwork_fail(self):
-        """
-        Test that a recipe with a floating tag which doesn't call get_srcrev() in the fetcher
-        raises an error when the fetcher is called.
-        """
-
-        # Enable the recipe to float using a distro override
-        self.write_config("DISTROOVERRIDES .= \":gitunpack-enable-recipe\"")
-
-        result = bitbake('gitunpackoffline-fail -c fetch', ignore_status=True)
-        self.assertTrue(re.search("Recipe uses a floating tag/branch .* for repo .* without a fixed SRCREV yet doesn't call bb.fetch2.get_srcrev()", result.output), msg = "Recipe without PV set to SRCPV should have failed: %s" % result.output)

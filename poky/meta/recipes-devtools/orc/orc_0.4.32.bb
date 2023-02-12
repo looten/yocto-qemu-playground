@@ -17,14 +17,14 @@ BBCLASSEXTEND = "native nativesdk"
 
 PACKAGES =+ "orc-examples"
 PACKAGES_DYNAMIC += "^liborc-.*"
-FILES:orc-examples = "${libdir}/orc/*"
-FILES:${PN} = "${bindir}/*"
+FILES_orc-examples = "${libdir}/orc/*"
+FILES_${PN} = "${bindir}/*"
 
-python populate_packages:prepend () {
+python populate_packages_prepend () {
     libdir = d.expand('${libdir}')
     do_split_packages(d, libdir, r'^lib(.*)\.so\.*', 'lib%s', 'ORC %s library', extra_depends='', allow_links=True)
 }
 
-do_compile:prepend:class-native () {
+do_compile_prepend_class-native () {
     sed -i -e 's#/tmp#.#g' ${S}/orc/orccodemem.c
 }

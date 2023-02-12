@@ -49,4 +49,4 @@ do_install () {
 XMLCATALOGS = "${sysconfdir}/xml/docbook-xml.xml"
 inherit xmlcatalog
 
-FILES:${PN} = "${datadir}/* ${sysconfdir}/xml/docbook-xml.xml"
+FILES_${PN} = "${datadir}/* ${sysconfdir}/xml/docbook-xml.xml"

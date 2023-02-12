@@ -14,4 +14,4 @@ do_install() {
 	install -m 0644 exports ${D}${sysconfdir}/
 }
 
-RDEPENDS:${PN} = "packagegroup-core-nfs-server"
+RDEPENDS_${PN} = "packagegroup-core-nfs-server"

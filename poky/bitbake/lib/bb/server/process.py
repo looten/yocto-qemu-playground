@@ -26,7 +26,6 @@ import errno
 import re
 import datetime
 import pickle
-import traceback
 import gc
 import bb.server.xmlrpcserver
 from bb import daemonize
@@ -219,9 +218,8 @@ class ProcessServer():
                     self.command_channel_reply.send(self.cooker.command.runCommand(command))
                     serverlog("Command Completed")
                 except Exception as e:
-                   stack = traceback.format_exc()
-                   serverlog('Exception in server main event loop running command %s (%s)' % (command, stack))
-                   logger.exception('Exception in server main event loop running command %s (%s)' % (command, stack))
+                   serverlog('Exception in server main event loop running command %s (%s)' % (command, str(e)))
+                   logger.exception('Exception in server main event loop running command %s (%s)' % (command, str(e)))
 
             if self.xmlrpc in ready:
                 self.xmlrpc.handle_requests()
@@ -244,6 +242,9 @@ class ProcessServer():
 
             ready = self.idle_commands(.1, fds)
 
+        if len(threading.enumerate()) != 1:
+            serverlog("More than one thread left?: " + str(threading.enumerate()))
+
         serverlog("Exiting")
         # Remove the socket file so we don't get any more connections to avoid races
         try:
@@ -260,9 +261,6 @@ class ProcessServer():
             pass
 
         self.cooker.post_serve()
-
-        if len(threading.enumerate()) != 1:
-            serverlog("More than one thread left?: " + str(threading.enumerate()))
 
         # Flush logs before we release the lock
         sys.stdout.flush()
@@ -327,10 +325,10 @@ class ProcessServer():
                         if e.errno != errno.ENOENT:
                             raise
 
-                msg = ["Delaying shutdown due to active processes which appear to be holding bitbake.lock"]
+                msg = "Delaying shutdown due to active processes which appear to be holding bitbake.lock"
                 if procs:
-                    msg.append(":\n%s" % str(procs.decode("utf-8")))
-                serverlog("".join(msg))
+                    msg += ":\n%s" % str(procs.decode("utf-8"))
+                serverlog(msg)
 
     def idle_commands(self, delay, fds=None):
         nextsleep = delay
@@ -437,7 +435,6 @@ class BitBakeProcessServerConnection(object):
         self.socket_connection = sock
 
     def terminate(self):
-        self.events.close()
         self.socket_connection.close()
         self.connection.connection.close()
         self.connection.recv.close()
@@ -558,7 +555,7 @@ def execServer(lockfd, readypipeinfd, lockname, sockname, server_timeout, xmlrpc
 
         server.run()
     finally:
-        # Flush any messages/errors to the logfile before exit
+        # Flush any ,essages/errors to the logfile before exit
         sys.stdout.flush()
         sys.stderr.flush()
 
@@ -663,18 +660,23 @@ class BBUIEventQueue:
         self.reader = ConnectionReader(readfd)
 
         self.t = threading.Thread()
+        self.t.daemon = True
         self.t.run = self.startCallbackHandler
         self.t.start()
 
     def getEvent(self):
-        with self.eventQueueLock:
-            if len(self.eventQueue) == 0:
-                return None
+        self.eventQueueLock.acquire()
 
-            item = self.eventQueue.pop(0)
-            if len(self.eventQueue) == 0:
-                self.eventQueueNotify.clear()
+        if len(self.eventQueue) == 0:
+            self.eventQueueLock.release()
+            return None
 
+        item = self.eventQueue.pop(0)
+
+        if len(self.eventQueue) == 0:
+            self.eventQueueNotify.clear()
+
+        self.eventQueueLock.release()
         return item
 
     def waitEvent(self, delay):
@@ -682,9 +684,10 @@ class BBUIEventQueue:
         return self.getEvent()
 
     def queue_event(self, event):
-        with self.eventQueueLock:
-            self.eventQueue.append(event)
-            self.eventQueueNotify.set()
+        self.eventQueueLock.acquire()
+        self.eventQueue.append(event)
+        self.eventQueueNotify.set()
+        self.eventQueueLock.release()
 
     def send_event(self, event):
         self.queue_event(pickle.loads(event))
@@ -693,17 +696,13 @@ class BBUIEventQueue:
         bb.utils.set_process_name("UIEventQueue")
         while True:
             try:
-                ready = self.reader.wait(0.25)
-                if ready:
-                    event = self.reader.get()
-                    self.queue_event(event)
-            except (EOFError, OSError, TypeError):
+                self.reader.wait()
+                event = self.reader.get()
+                self.queue_event(event)
+            except EOFError:
                 # Easiest way to exit is to close the file descriptor to cause an exit
                 break
-
-    def close(self):
         self.reader.close()
-        self.t.join()
 
 class ConnectionReader(object):
 
@@ -737,32 +736,12 @@ class ConnectionWriter(object):
         # Why bb.event needs this I have no idea
         self.event = self
 
-    def _send(self, obj):
+    def send(self, obj):
+        obj = multiprocessing.reduction.ForkingPickler.dumps(obj)
         gc.disable()
         with self.wlock:
             self.writer.send_bytes(obj)
         gc.enable()
-
-    def send(self, obj):
-        obj = multiprocessing.reduction.ForkingPickler.dumps(obj)
-        # See notes/code in CookerParser
-        # We must not terminate holding this lock else processes will hang.
-        # For SIGTERM, raising afterwards avoids this.
-        # For SIGINT, we don't want to have written partial data to the pipe.
-        # pthread_sigmask block/unblock would be nice but doesn't work, https://bugs.python.org/issue47139
-        process = multiprocessing.current_process()
-        if process and hasattr(process, "queue_signals"):
-            with process.signal_threadlock:
-                process.queue_signals = True
-                self._send(obj)
-                process.queue_signals = False
-                try:
-                    for sig in process.signal_received.pop():
-                        process.handle_sig(sig, None)
-                except IndexError:
-                    pass
-        else:
-            self._send(obj)
 
     def fileno(self):
         return self.writer.fileno()

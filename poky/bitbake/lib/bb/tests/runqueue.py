@@ -29,14 +29,13 @@ class RunQueueTests(unittest.TestCase):
     def run_bitbakecmd(self, cmd, builddir, sstatevalid="", slowtasks="", extraenv=None, cleanup=False):
         env = os.environ.copy()
         env["BBPATH"] = os.path.realpath(os.path.join(os.path.dirname(__file__), "runqueue-tests"))
-        env["BB_ENV_PASSTHROUGH_ADDITIONS"] = "SSTATEVALID SLOWTASKS TOPDIR"
+        env["BB_ENV_EXTRAWHITE"] = "SSTATEVALID SLOWTASKS"
         env["SSTATEVALID"] = sstatevalid
         env["SLOWTASKS"] = slowtasks
-        env["TOPDIR"] = builddir
         if extraenv:
             for k in extraenv:
                 env[k] = extraenv[k]
-                env["BB_ENV_PASSTHROUGH_ADDITIONS"] = env["BB_ENV_PASSTHROUGH_ADDITIONS"] + " " + k
+                env["BB_ENV_EXTRAWHITE"] = env["BB_ENV_EXTRAWHITE"] + " " + k
         try:
             output = subprocess.check_output(cmd, env=env, stderr=subprocess.STDOUT,universal_newlines=True, cwd=builddir)
             print(output)
@@ -59,8 +58,6 @@ class RunQueueTests(unittest.TestCase):
             expected = ['a1:' + x for x in self.alltasks]
             self.assertEqual(set(tasks), set(expected))
 
-            self.shutdown(tempdir)
-
     def test_single_setscenevalid(self):
         with tempfile.TemporaryDirectory(prefix="runqueuetest") as tempdir:
             cmd = ["bitbake", "a1"]
@@ -71,8 +68,6 @@ class RunQueueTests(unittest.TestCase):
                         'a1:populate_sysroot', 'a1:build']
             self.assertEqual(set(tasks), set(expected))
 
-            self.shutdown(tempdir)
-
     def test_intermediate_setscenevalid(self):
         with tempfile.TemporaryDirectory(prefix="runqueuetest") as tempdir:
             cmd = ["bitbake", "a1"]
@@ -81,8 +76,6 @@ class RunQueueTests(unittest.TestCase):
             expected = ['a1:package_setscene', 'a1:packagedata', 'a1:package_qa', 'a1:package_write_rpm', 'a1:package_write_ipk',
                         'a1:populate_sysroot_setscene', 'a1:build']
             self.assertEqual(set(tasks), set(expected))
-
-            self.shutdown(tempdir)
 
     def test_intermediate_notcovered(self):
         with tempfile.TemporaryDirectory(prefix="runqueuetest") as tempdir:
@@ -93,8 +86,6 @@ class RunQueueTests(unittest.TestCase):
                         'a1:package_qa_setscene', 'a1:build', 'a1:populate_sysroot_setscene']
             self.assertEqual(set(tasks), set(expected))
 
-            self.shutdown(tempdir)
-
     def test_all_setscenevalid(self):
         with tempfile.TemporaryDirectory(prefix="runqueuetest") as tempdir:
             cmd = ["bitbake", "a1"]
@@ -104,8 +95,6 @@ class RunQueueTests(unittest.TestCase):
                         'a1:package_qa_setscene', 'a1:build', 'a1:populate_sysroot_setscene']
             self.assertEqual(set(tasks), set(expected))
 
-            self.shutdown(tempdir)
-
     def test_no_settasks(self):
         with tempfile.TemporaryDirectory(prefix="runqueuetest") as tempdir:
             cmd = ["bitbake", "a1", "-c", "patch"]
@@ -113,8 +102,6 @@ class RunQueueTests(unittest.TestCase):
             tasks = self.run_bitbakecmd(cmd, tempdir, sstatevalid)
             expected = ['a1:fetch', 'a1:unpack', 'a1:patch']
             self.assertEqual(set(tasks), set(expected))
-
-            self.shutdown(tempdir)
 
     def test_mix_covered_notcovered(self):
         with tempfile.TemporaryDirectory(prefix="runqueuetest") as tempdir:
@@ -124,7 +111,6 @@ class RunQueueTests(unittest.TestCase):
             expected = ['a1:fetch', 'a1:unpack', 'a1:patch', 'a1:populate_sysroot_setscene']
             self.assertEqual(set(tasks), set(expected))
 
-            self.shutdown(tempdir)
 
     # Test targets with intermediate setscene tasks alongside a target with no intermediate setscene tasks
     def test_mixed_direct_tasks_setscene_tasks(self):
@@ -135,8 +121,6 @@ class RunQueueTests(unittest.TestCase):
             expected = ['c1:fetch', 'c1:unpack', 'c1:patch', 'a1:package_write_ipk_setscene', 'a1:package_write_rpm_setscene', 'a1:packagedata_setscene',
                         'a1:package_qa_setscene', 'a1:build', 'a1:populate_sysroot_setscene']
             self.assertEqual(set(tasks), set(expected))
-
-            self.shutdown(tempdir)
 
     # This test slows down the execution of do_package_setscene until after other real tasks have
     # started running which tests for a bug where tasks were being lost from the buildable list of real
@@ -152,22 +136,18 @@ class RunQueueTests(unittest.TestCase):
                         'a1:populate_sysroot', 'a1:build']
             self.assertEqual(set(tasks), set(expected))
 
-            self.shutdown(tempdir)
-
-    def test_setscene_ignore_tasks(self):
+    def test_setscenewhitelist(self):
         with tempfile.TemporaryDirectory(prefix="runqueuetest") as tempdir:
             cmd = ["bitbake", "a1"]
             extraenv = {
                 "BB_SETSCENE_ENFORCE" : "1",
-                "BB_SETSCENE_ENFORCE_IGNORE_TASKS" : "a1:do_package_write_rpm a1:do_build"
+                "BB_SETSCENE_ENFORCE_WHITELIST" : "a1:do_package_write_rpm a1:do_build"
             }
             sstatevalid = "a1:do_package a1:do_package_qa a1:do_packagedata a1:do_package_write_ipk a1:do_populate_lic a1:do_populate_sysroot"
             tasks = self.run_bitbakecmd(cmd, tempdir, sstatevalid, extraenv=extraenv)
             expected = ['a1:packagedata_setscene', 'a1:package_qa_setscene', 'a1:package_write_ipk_setscene',
                         'a1:populate_sysroot_setscene', 'a1:package_setscene']
             self.assertEqual(set(tasks), set(expected))
-
-            self.shutdown(tempdir)
 
     # Tests for problems with dependencies between setscene tasks
     def test_no_setscenevalid_harddeps(self):
@@ -182,8 +162,6 @@ class RunQueueTests(unittest.TestCase):
                         'd1:populate_sysroot', 'd1:build']
             self.assertEqual(set(tasks), set(expected))
 
-            self.shutdown(tempdir)
-
     def test_no_setscenevalid_withdeps(self):
         with tempfile.TemporaryDirectory(prefix="runqueuetest") as tempdir:
             cmd = ["bitbake", "b1"]
@@ -194,8 +172,6 @@ class RunQueueTests(unittest.TestCase):
             expected.remove('a1:package_qa')
             self.assertEqual(set(tasks), set(expected))
 
-            self.shutdown(tempdir)
-
     def test_single_a1_setscenevalid_withdeps(self):
         with tempfile.TemporaryDirectory(prefix="runqueuetest") as tempdir:
             cmd = ["bitbake", "b1"]
@@ -205,8 +181,6 @@ class RunQueueTests(unittest.TestCase):
                         'a1:compile', 'a1:install', 'a1:packagedata', 'a1:package_write_rpm', 'a1:package_write_ipk',
                         'a1:populate_sysroot'] + ['b1:' + x for x in self.alltasks]
             self.assertEqual(set(tasks), set(expected))
-
-            self.shutdown(tempdir)
 
     def test_single_b1_setscenevalid_withdeps(self):
         with tempfile.TemporaryDirectory(prefix="runqueuetest") as tempdir:
@@ -219,8 +193,6 @@ class RunQueueTests(unittest.TestCase):
             expected.remove('b1:package')
             self.assertEqual(set(tasks), set(expected))
 
-            self.shutdown(tempdir)
-
     def test_intermediate_setscenevalid_withdeps(self):
         with tempfile.TemporaryDirectory(prefix="runqueuetest") as tempdir:
             cmd = ["bitbake", "b1"]
@@ -231,8 +203,6 @@ class RunQueueTests(unittest.TestCase):
             expected.remove('b1:package')
             self.assertEqual(set(tasks), set(expected))
 
-            self.shutdown(tempdir)
-
     def test_all_setscenevalid_withdeps(self):
         with tempfile.TemporaryDirectory(prefix="runqueuetest") as tempdir:
             cmd = ["bitbake", "b1"]
@@ -242,8 +212,6 @@ class RunQueueTests(unittest.TestCase):
                         'b1:build', 'a1:populate_sysroot_setscene', 'b1:package_write_ipk_setscene', 'b1:package_write_rpm_setscene',
                         'b1:packagedata_setscene', 'b1:package_qa_setscene', 'b1:populate_sysroot_setscene']
             self.assertEqual(set(tasks), set(expected))
-
-            self.shutdown(tempdir)
 
     def test_multiconfig_setscene_optimise(self):
         with tempfile.TemporaryDirectory(prefix="runqueuetest") as tempdir:
@@ -264,8 +232,6 @@ class RunQueueTests(unittest.TestCase):
                 expected.remove(x)
             self.assertEqual(set(tasks), set(expected))
 
-            self.shutdown(tempdir)
-
     def test_multiconfig_bbmask(self):
         # This test validates that multiconfigs can independently mask off
         # recipes they do not want with BBMASK. It works by having recipes
@@ -281,8 +247,6 @@ class RunQueueTests(unittest.TestCase):
             }
             cmd = ["bitbake", "mc:mc-1:fails-mc2", "mc:mc_2:fails-mc1"]
             self.run_bitbakecmd(cmd, tempdir, "", extraenv=extraenv)
-
-            self.shutdown(tempdir)
 
     def test_multiconfig_mcdepends(self):
         with tempfile.TemporaryDirectory(prefix="runqueuetest") as tempdir:
@@ -314,8 +278,7 @@ class RunQueueTests(unittest.TestCase):
                        ["mc_2:a1:%s" % t for t in rerun_tasks]
             self.assertEqual(set(tasks), set(expected))
 
-            self.shutdown(tempdir)
-
+    @unittest.skipIf(sys.version_info < (3, 5, 0), 'Python 3.5 or later required')
     def test_hashserv_single(self):
         with tempfile.TemporaryDirectory(prefix="runqueuetest") as tempdir:
             extraenv = {
@@ -341,6 +304,7 @@ class RunQueueTests(unittest.TestCase):
 
             self.shutdown(tempdir)
 
+    @unittest.skipIf(sys.version_info < (3, 5, 0), 'Python 3.5 or later required')
     def test_hashserv_double(self):
         with tempfile.TemporaryDirectory(prefix="runqueuetest") as tempdir:
             extraenv = {
@@ -365,6 +329,7 @@ class RunQueueTests(unittest.TestCase):
 
             self.shutdown(tempdir)
 
+    @unittest.skipIf(sys.version_info < (3, 5, 0), 'Python 3.5 or later required')
     def test_hashserv_multiple_setscene(self):
         # Runs e1:do_package_setscene twice
         with tempfile.TemporaryDirectory(prefix="runqueuetest") as tempdir:
@@ -396,6 +361,7 @@ class RunQueueTests(unittest.TestCase):
 
     def shutdown(self, tempdir):
         # Wait for the hashserve socket to disappear else we'll see races with the tempdir cleanup
-        while (os.path.exists(tempdir + "/hashserve.sock") or os.path.exists(tempdir + "cache/hashserv.db-wal") or os.path.exists(tempdir + "/bitbake.lock")):
+        while (os.path.exists(tempdir + "/hashserve.sock") or os.path.exists(tempdir + "cache/hashserv.db-wal")):
             time.sleep(0.5)
+
 

@@ -5,7 +5,7 @@ development or external module builds"
 
 SECTION = "kernel"
 
-LICENSE = "GPL-2.0-only"
+LICENSE = "GPLv2"
 
 inherit linux-kernel-base
 
@@ -48,7 +48,7 @@ do_install() {
     mkdir -p ${D}/usr/src
     (
 	cd ${D}/usr/src
-	ln -rs ${D}${KERNEL_BUILD_ROOT}${KERNEL_VERSION}/source kernel
+	lnr ${D}${KERNEL_BUILD_ROOT}${KERNEL_VERSION}/source kernel
     )
 
     # for on target purposes, we unify build and source
@@ -72,9 +72,7 @@ do_install() {
     (
 	cd ${B}
 
-	if [ -s Module.symvers ]; then
-	    cp Module.symvers $kerneldir/build
-	fi
+	cp Module.symvers $kerneldir/build
 	cp System.map* $kerneldir/build
 	if [ -s Module.markers ]; then
 	    cp Module.markers $kerneldir/build
@@ -111,16 +109,11 @@ do_install() {
 	    fi
 	fi
 
-	if [ "${ARCH}" = "arm64" -o "${ARCH}" = "riscv" ]; then
-            if [ -e arch/${ARCH}/kernel/vdso/vdso.lds ]; then
-	        cp -a --parents arch/${ARCH}/kernel/vdso/vdso.lds $kerneldir/build/
-            fi
+	if [ "${ARCH}" = "arm64" ]; then
+	    cp -a --parents arch/arm64/kernel/vdso/vdso.lds $kerneldir/build/
 	fi
 	if [ "${ARCH}" = "powerpc" ]; then
 	    cp -a --parents arch/powerpc/kernel/vdso32/vdso32.lds $kerneldir/build 2>/dev/null || :
-	    cp -a --parents arch/powerpc/kernel/vdso64/vdso64.lds $kerneldir/build 2>/dev/null || :
-	    # v5.19+
-	    cp -a --parents arch/powerpc/kernel/vdso/vdso*.lds $kerneldir/build 2>/dev/null || :
 	fi
 
 	cp -a include $kerneldir/build/include
@@ -130,12 +123,8 @@ do_install() {
 	# breaks workflows.
 	cp -a --parents include/generated/autoconf.h $kerneldir/build 2>/dev/null || :
 
-	if [ -e $kerneldir/include/generated/.vdso-offsets.h.cmd ] ||
-	     [ -e $kerneldir/build/include/generated/.vdso-offsets.h.cmd ] ||
-	     [ -e $kerneldir/build/include/generated/.vdso32-offsets.h.cmd ] ; then
-	    rm -f $kerneldir/include/generated/.vdso-offsets.h.cmd
-	    rm -f $kerneldir/build/include/generated/.vdso-offsets.h.cmd
-	    rm -f $kerneldir/build/include/generated/.vdso32-offsets.h.cmd
+	if [ -e $kerneldir/include/generated/.vdso-offsets.h.cmd ]; then
+	    rm $kerneldir/include/generated/.vdso-offsets.h.cmd
 	fi
     )
 
@@ -182,15 +171,8 @@ do_install() {
             cp -a --parents arch/arm64/tools/gen-cpucaps.awk $kerneldir/build/ 2>/dev/null || :
             cp -a --parents arch/arm64/tools/cpucaps $kerneldir/build/ 2>/dev/null || :
 
-            # 5.19+
-            cp -a --parents arch/arm64/tools/gen-sysreg.awk $kerneldir/build/   2>/dev/null || :
-            cp -a --parents arch/arm64/tools/sysreg $kerneldir/build/   2>/dev/null || :
-
             if [ -e $kerneldir/build/arch/arm64/tools/gen-cpucaps.awk ]; then
                  sed -i -e "s,#!.*awk.*,#!${USRBINPATH}/env awk," $kerneldir/build/arch/arm64/tools/gen-cpucaps.awk
-            fi
-            if [ -e $kerneldir/build/arch/arm64/tools/gen-sysreg.awk ]; then
-                 sed -i -e "s,#!.*awk.*,#!${USRBINPATH}/env awk," $kerneldir/build/arch/arm64/tools/gen-sysreg.awk
             fi
 	fi
 
@@ -200,20 +182,6 @@ do_install() {
 	    cp -a --parents arch/${ARCH}/kernel/syscalls/syscalltbl.sh $kerneldir/build/ 2>/dev/null || :
 	    cp -a --parents arch/${ARCH}/kernel/syscalls/syscallhdr.sh $kerneldir/build/ 2>/dev/null || :
 	    cp -a --parents arch/${ARCH}/kernel/vdso32/* $kerneldir/build/ 2>/dev/null || :
-	    cp -a --parents arch/${ARCH}/kernel/vdso64/* $kerneldir/build/ 2>/dev/null || :
-
-	    # v5.19+
-	    cp -a --parents arch/powerpc/kernel/vdso/*.S $kerneldir/build 2>/dev/null || :
-	    cp -a --parents arch/powerpc/kernel/vdso/*gettimeofday.* $kerneldir/build 2>/dev/null || :
-	    cp -a --parents arch/powerpc/kernel/vdso/gen_vdso*_offsets.sh $kerneldir/build/ 2>/dev/null || :
-	fi
-	if [ "${ARCH}" = "riscv" ]; then
-            cp -a --parents arch/riscv/kernel/vdso/*gettimeofday.* $kerneldir/build/
-            cp -a --parents arch/riscv/kernel/vdso/note.S $kerneldir/build/
-            if [ -e arch/riscv/kernel/vdso/gen_vdso_offsets.sh ]; then
-                    cp -a --parents arch/riscv/kernel/vdso/gen_vdso_offsets.sh $kerneldir/build/
-            fi
-	    cp -a --parents arch/riscv/kernel/vdso/* $kerneldir/build/ 2>/dev/null || :
 	fi
 
 	# include the machine specific headers for ARM variants, if available.
@@ -223,9 +191,6 @@ do_install() {
 	    # include a few files for 'make prepare'
 	    cp -a --parents arch/arm/tools/gen-mach-types $kerneldir/build/
 	    cp -a --parents arch/arm/tools/mach-types $kerneldir/build/
-
-	    # 5.19+
-	    cp -a --parents arch/arm/tools/gen-sysreg.awk $kerneldir/build/	2>/dev/null || :
 
 	    # ARM syscall table tools only exist for kernels v4.10 or later
             SYSCALL_TOOLS=$(find arch/arm/tools -name "syscall*")
@@ -308,6 +273,9 @@ do_install() {
     # external modules can be built
     touch -r $kerneldir/build/Makefile $kerneldir/build/include/generated/uapi/linux/version.h
 
+    # Copy .config to include/config/auto.conf so "make prepare" is unnecessary.
+    cp $kerneldir/build/.config $kerneldir/build/include/config/auto.conf
+
     # make sure these are at least as old as the .config, or rebuilds will trigger
     touch -r $kerneldir/build/.config $kerneldir/build/include/generated/autoconf.h 2>/dev/null || :
     touch -r $kerneldir/build/.config $kerneldir/build/include/config/auto.conf* 2>/dev/null || :
@@ -345,17 +313,17 @@ do_install() {
 # Ensure we don't race against "make scripts" during cpio
 do_install[lockfiles] = "${TMPDIR}/kernel-scripts.lock"
 
-FILES:${PN} = "${KERNEL_BUILD_ROOT} ${KERNEL_SRC_PATH}"
-FILES:${PN}-dbg += "${KERNEL_BUILD_ROOT}*/build/scripts/*/.debug/*"
+FILES_${PN} = "${KERNEL_BUILD_ROOT} ${KERNEL_SRC_PATH}"
+FILES_${PN}-dbg += "${KERNEL_BUILD_ROOT}*/build/scripts/*/.debug/*"
 
-RDEPENDS:${PN} = "bc python3 flex bison ${TCLIBC}-utils"
+RDEPENDS_${PN} = "bc python3 flex bison ${TCLIBC}-utils"
 # 4.15+ needs these next two RDEPENDS
-RDEPENDS:${PN} += "openssl-dev util-linux"
+RDEPENDS_${PN} += "openssl-dev util-linux"
 # and x86 needs a bit more for 4.15+
-RDEPENDS:${PN} += "${@bb.utils.contains('ARCH', 'x86', 'elfutils-dev', '', d)}"
+RDEPENDS_${PN} += "${@bb.utils.contains('ARCH', 'x86', 'elfutils-dev', '', d)}"
 # 5.8+ needs gcc-plugins libmpc-dev
-RDEPENDS:${PN} += "gcc-plugins libmpc-dev"
+RDEPENDS_${PN} += "gcc-plugins libmpc-dev"
 # 5.13+ needs awk for arm64
-RDEPENDS:${PN}:append:aarch64 = " gawk"
+RDEPENDS_${PN}_append_aarch64 = " gawk"
 # 5.13+ needs grep for powerpc
-RDEPENDS:${PN}:append:powerpc = " grep"
+RDEPENDS_${PN}_append_powerpc = " grep"
